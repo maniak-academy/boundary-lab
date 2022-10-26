@@ -1,0 +1,92 @@
+#!/bin/bash
+set -e
+set -v
+
+until [ -f /opt/instruqt/bootstrap/host-bootstrap-completed ]
+do
+    sleep 1
+done
+echo "source /usr/share/bash-completion/bash_completion" >> /root/.bashrc
+
+VAULT_VERSION=1.12.0
+TERRAFORM_VERSION=1.3.3
+CONSUL_VERSION=1.13.3
+BOUNDARY_VERSION=0.11.0
+BOUNDARY_WORKER_VERSION=0.11.0
+
+# Install Vault
+curl -fsSL -o /tmp/vault.zip "https://releases.hashicorp.com/vault/${VAULT_VERSION}+ent/vault_${VAULT_VERSION}+ent_linux_amd64.zip"
+unzip -o -d /usr/local/bin/ /tmp/vault.zip
+
+# Install Terraform
+curl -fsSL -o /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+unzip -o -d /usr/local/bin/ /tmp/terraform.zip
+
+# Install Consul
+curl -fsSL -o /tmp/consul.zip "https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip"
+unzip -o -d /usr/local/bin/ /tmp/consul.zip
+
+# Install Boundary
+curl -fsSL -o /tmp/boundary.zip "https://releases.hashicorp.com/boundary/${BOUNDARY_VERSION}/boundary_${BOUNDARY_VERSION}_linux_amd64.zip"
+unzip -o -d /usr/local/bin/ /tmp/boundary.zip
+
+# Install Boundary Worker
+curl -fsSL -o /tmp/boundary.zip "https://releases.hashicorp.com/boundary-worker/${BOUNDARY_WORKER_VERSION}+hcp/boundary-worker_${BOUNDARY_WORKER_VERSION}+hcp_linux_amd64.zip"
+unzip -o -d /usr/local/bin/ /tmp/boundary-worker.zip
+
+cd /tmp
+git clone https://github.com/Andrew-Klaas/boundary-lab.git
+
+# Copy additional files.
+cp boundary-lab/assets/systemd-files/vault.service /etc/systemd/system/vault.service
+cp boundary-lab/assets/systemd-files/boundary-controller.service /etc/systemd/system/boundary-controller.service
+cp boundary-lab/assets/systemd-files/boundary-worker.service /etc/systemd/system/boundary-worker.service
+cp boundary-lab/assets/systemd-files/boundary.service /etc/systemd/system/boundary.service
+
+cp -r boundary-lab/assets/terraform-boundary /root/
+
+mkdir /etc/consul.d
+mkdir /etc/vault.d
+mkdir /etc/boundary.d
+mkdir /tmp/consul
+mkdir /tmp/vault
+mkdir /tmp/boundary
+
+systemctl daemon-reload
+systemctl enable consul.service
+systemctl enable vault.service
+systemctl enable boundary-controller.service
+systemctl enable boundary-worker.service
+
+####################################
+# Configure Boundary Server
+####################################
+
+
+
+
+
+
+#start Boundary in dev mode (Controller, worker, postgres container)
+systemctl start boundary
+
+
+
+echo "Boundary install complete" >> /tmp/install.log
+
+######################################
+# install psql for any testing
+######################################
+sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+apt-get -y update
+sudo apt-get -y install postgresql
+
+
+
+
+
+exit 0
+
+
+
