@@ -14,7 +14,7 @@ developers:
 private: true
 published: false
 challenges:
-- slug: configure-boundary-and-vault
+- slug: 01-boundary-worker-setup
   id: efkilv6revt0
   type: challenge
   title: Configure Boundary and Vault
@@ -92,4 +92,4 @@ challenges:
     path: /root/terraform-boundary/main.tf
   difficulty: basic
   timelimit: 6000
-checksum: "12861825685430757213"
+checksum: "7102524342275751858"

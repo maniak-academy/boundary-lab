@@ -10,21 +10,16 @@ echo "source /usr/share/bash-completion/bash_completion" >> /root/.bashrc
 
 VAULT_VERSION=1.12.0
 TERRAFORM_VERSION=1.3.3
-CONSUL_VERSION=1.13.3
 BOUNDARY_VERSION=0.11.0
 BOUNDARY_WORKER_VERSION=0.11.0
 
 # Install Vault
-curl -fsSL -o /tmp/vault.zip "https://releases.hashicorp.com/vault/${VAULT_VERSION}+ent/vault_${VAULT_VERSION}+ent_linux_amd64.zip"
+curl -fsSL -o /tmp/vault.zip "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip"
 unzip -o -d /usr/local/bin/ /tmp/vault.zip
 
 # Install Terraform
 curl -fsSL -o /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 unzip -o -d /usr/local/bin/ /tmp/terraform.zip
-
-# Install Consul
-curl -fsSL -o /tmp/consul.zip "https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip"
-unzip -o -d /usr/local/bin/ /tmp/consul.zip
 
 # Install Boundary
 curl -fsSL -o /tmp/boundary.zip "https://releases.hashicorp.com/boundary/${BOUNDARY_VERSION}/boundary_${BOUNDARY_VERSION}_linux_amd64.zip"
@@ -45,15 +40,12 @@ cp boundary-lab/assets/systemd-files/boundary.service /etc/systemd/system/bounda
 
 cp -r boundary-lab/assets/terraform-boundary /root/
 
-mkdir /etc/consul.d
 mkdir /etc/vault.d
 mkdir /etc/boundary.d
-mkdir /tmp/consul
 mkdir /tmp/vault
 mkdir /tmp/boundary
 
 systemctl daemon-reload
-systemctl enable consul.service
 systemctl enable vault.service
 systemctl enable boundary-controller.service
 systemctl enable boundary-worker.service
