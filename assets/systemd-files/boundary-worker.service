@@ -3,7 +3,7 @@ Description=Boundary Worker
 Documentation=https://www.boundaryproject.io/docs
 
 [Service]
-ExecStart=/usr/local/bin/boundary server -config /etc/boundary.d/worker.hcl
+ExecStart=/usr/local/bin/boundary-worker server -config /etc/boundary.d/pki-worker.hcl
 User=root
 LimitMEMLOCK=infinity
 Capabilities=CAP_IPC_LOCK+ep

@@ -31,7 +31,7 @@ curl -fsSL -o /tmp/boundary.zip "https://releases.hashicorp.com/boundary/${BOUND
 unzip -o -d /usr/local/bin/ /tmp/boundary.zip
 
 # Install Boundary Worker
-curl -fsSL -o /tmp/boundary.zip "https://releases.hashicorp.com/boundary-worker/${BOUNDARY_WORKER_VERSION}+hcp/boundary-worker_${BOUNDARY_WORKER_VERSION}+hcp_linux_amd64.zip"
+curl -fsSL -o /tmp/boundary-worker.zip "https://releases.hashicorp.com/boundary-worker/${BOUNDARY_WORKER_VERSION}+hcp/boundary-worker_${BOUNDARY_WORKER_VERSION}+hcp_linux_amd64.zip"
 unzip -o -d /usr/local/bin/ /tmp/boundary-worker.zip
 
 cd /tmp
@@ -63,16 +63,36 @@ systemctl enable boundary-worker.service
 ####################################
 
 
+local_ipv4=$(hostname -I | awk '{print $1}')
 
+mkdir -p /etc/boundary.d
 
+cat << EOF > /etc/boundary.d/pki-worker.hcl
+disable_mlock = true
 
+hcp_boundary_cluster_id = "REPLACE_ME"
 
-#start Boundary in dev mode (Controller, worker, postgres container)
-systemctl start boundary
+listener "tcp" {
+  address = "0.0.0.0:9202"
+  purpose = "proxy"
+}
 
+worker {
+  public_addr = "$HOST_IP_ADDR"
+  auth_storage_path = "/etc/boundary.d/"
+  tags {
+    type = ["worker", "dev"]
+  }
+}
+EOF
 
+#user will need to grab token from the file. /etc/boundary.d/auth_storage_token
+#start Boundary worker
+systemctl start boundary-worker
 
-echo "Boundary install complete" >> /tmp/install.log
+# boundary-worker server -config="/home/ubuntu/boundary/pki-worker.hcl"
+
+echo "Boundary worker install complete" >> /tmp/install.log
 
 ######################################
 # install psql for any testing
@@ -82,11 +102,5 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 apt-get -y update
 sudo apt-get -y install postgresql
 
-
-
-
-
+echo "PSQL install complete" >> /tmp/install.log
 exit 0
-
-
-
