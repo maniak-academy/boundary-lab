@@ -1,7 +1,7 @@
 slug: klaas-boundary-sandbox
 id: fmjg5mbiv8rw
 version: 0.0.1
-title: (WIP) Test Boundary PKI Workers and Target Types
+title: Klaas-(WIP) Test Boundary PKI Workers and Target Types (Unfinished)
 teaser: (WIP) Boundary Demo env (NOT READY)
 description: (WIP) Test Boundary PKI Workers and Target Types
 icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/HashiCorp_Icon_Black.png
@@ -11,9 +11,9 @@ tags:
 owner: hashicorp
 developers:
 - aklaas@hashicorp.com
-maintenance: true
 private: true
 published: false
+maintenance: true
 challenges:
 - slug: 01-boundary-worker-setup
   id: efkilv6revt0
@@ -92,4 +92,4 @@ challenges:
     path: /root/terraform-boundary/main.tf
   difficulty: basic
   timelimit: 6000
-checksum: "18419860732215255733"
+checksum: "12560864956872947292"
