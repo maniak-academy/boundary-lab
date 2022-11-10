@@ -29,12 +29,12 @@ resource "boundary_auth_method" "password" {
 # resource "boundary_auth_method_oidc" "provider" {
 #   name               = "Auth0"
 #   description        = "OIDC auth method for Auth0"
-#   scope_id           = "o_1234567890"                    # updateme
-#   issuer             = "https://dev-1vdl8c0q.us.auth0.com/"   # updateme
-#   client_id          = ""     # updateme
-#   client_secret      = ""   # updateme
+#   scope_id           = boundary_scope.corp.id                   
+#   issuer             = "https://dev-1vdl8c0q.us.auth0.com/"   
+#   client_id          = var.    
+#   client_secret      = var.   
 #   signing_algorithms = ["RS256"]
-#   api_url_prefix     = "BOUNDARY_ADDR:9200"                   # updateme
+#   api_url_prefix     = "BOUNDARY_ADDR:9200"                 
 #   is_primary_for_scope = true
 #   state = "active-public"
 #   max_age = 0
@@ -46,7 +46,7 @@ resource "boundary_auth_method" "password" {
 #   name           = "user1"
 #   description    = "OIDC account for user1"
 #   auth_method_id = boundary_auth_method_oidc.provider.id
-#   issuer  = "https://dev-1vdl8c0q.us.auth0.com/"              # updateme
+#   issuer  = "https://dev-1vdl8c0q.us.auth0.com/"            
 #   subject = ""
 # }
 # resource "boundary_managed_group" "oidc_group" {

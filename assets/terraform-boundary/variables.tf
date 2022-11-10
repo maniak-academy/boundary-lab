@@ -4,10 +4,11 @@ variable "boundary_addr" {
 variable "auth_method_id" {
   type = string
 }
-
 variable "vault_token" {
   type = string
 }
+
+
 
 variable "users" {
   type = set(string)
