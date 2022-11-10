@@ -93,3 +93,7 @@ sudo apt-get -y install postgresql
 
 echo "PSQL install complete" >> /tmp/install.log
 exit 0
+
+
+
+vault token create -no-default-policy=true -policy="vault_admin" -orphan=true -period=20m -renewable=false -format=json | jq -r .auth.client_token

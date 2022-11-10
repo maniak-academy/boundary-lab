@@ -60,13 +60,13 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 apt-get -y update
 sudo apt-get -y install postgresql
 systemctl start postgresql
-sudo cat << EOF > /etc/postgresql/14/main/conf.d/postgresql.conf
+sudo cat << EOF > /etc/postgresql/15/main/conf.d/postgresql.conf
 listen_addresses '*'
 EOF
 sudo echo "
 host    all             all              0.0.0.0/0                       md5
 host    all             all              ::/0                            md5
-" >> /etc/postgresql/14/main/pg_hba.conf
+" >> /etc/postgresql/15/main/pg_hba.conf
 systemctl restart postgresql
 
 sudo -u postgres psql << EOF
@@ -78,6 +78,7 @@ EOF
 ####################################
 # Configure Vault Server
 ####################################
+local_ipv4=$(hostname -I | awk '{print $1}')
 cat << EOF > /etc/vault.d/vault.hcl
 storage "file" {
   path = "/tmp/vault/data"
@@ -89,8 +90,8 @@ listener "tcp" {
 # service_registration "consul" {
 #   address = "$HOST_IP_ADDR:8500"
 # }
-api_addr = "http://$HOST_IP_ADDR:8200"
-cluster_addr = "https://$HOST_IP_ADDR:8201"
+api_addr = "http://${local_ipv4}:8200"
+cluster_addr = "https://${local_ipv4}:8201"
 ui = true
 EOF
 
@@ -113,8 +114,11 @@ path "*" {
 vault auth enable userpass
 vault write auth/userpass/users/vault password=vault policies=vault_admin
 
-
+vault secrets enable -path secret -version=2 kv
 vault secrets enable database
+
+vault kv put secret/my-secret username=root private_key=@/root/.ssh/id_rsa
+vault kv put secret/my-app-secret username=application-user password=application-password
 
 vault write database/config/my-postgresql-database \
 plugin_name=postgresql-database-plugin \
@@ -133,5 +137,13 @@ max_ttl="24h"
 vault read database/creds/vault_go_demo
 
 echo "Vault install complete" >> /tmp/install.log
+
+
+#create a user for static testing
+# sudo useradd testuser
+# cat << EOF > testpassword.txt
+# testuser:testpassword
+# EOF
+# chpasswd < testpassword.txt
 
 exit 0

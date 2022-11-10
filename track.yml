@@ -42,14 +42,13 @@ challenges:
     Next, we will create a Vault token for the Boundary Server to use.
 
     ```
-    vault policy write boundary-controller boundary-controller-policy.hcl
     vault token create \
       -no-default-policy=true \
-      -policy="boundary-controller" \
-      -policy="go-app" \
+      -policy="vault_admin" \
       -orphan=true \
       -period=20m \
-      -renewable=true
+      -renewable=true \
+      -format=json
     ```
 
     Save the "token" from the above output. You will pass this value to Terraform in the "apply" step below.
@@ -92,4 +91,4 @@ challenges:
     path: /root/terraform-boundary/main.tf
   difficulty: basic
   timelimit: 6000
-checksum: "7102524342275751858"
+checksum: "2572252309393312653"
