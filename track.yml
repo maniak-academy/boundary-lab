@@ -11,6 +11,7 @@ tags:
 owner: hashicorp
 developers:
 - aklaas@hashicorp.com
+maintenance: true
 private: true
 published: false
 challenges:
