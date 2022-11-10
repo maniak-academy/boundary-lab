@@ -31,8 +31,8 @@ resource "boundary_auth_method" "password" {
 #   description        = "OIDC auth method for Auth0"
 #   scope_id           = "o_1234567890"                    # updateme
 #   issuer             = "https://dev-1vdl8c0q.us.auth0.com/"   # updateme
-#   client_id          = "zbaJLTZh3n14WqSV7qQ9onuIVRDaZdzx"     # updateme
-#   client_secret      = "t35c9NNw1aZ8haQKYJjCL0lauNOSp5UNPovUJXo8Ea2sPZAR1DszEowX-5-lg-Xr"   # updateme
+#   client_id          = ""     # updateme
+#   client_secret      = ""   # updateme
 #   signing_algorithms = ["RS256"]
 #   api_url_prefix     = "BOUNDARY_ADDR:9200"                   # updateme
 #   is_primary_for_scope = true
@@ -47,7 +47,7 @@ resource "boundary_auth_method" "password" {
 #   description    = "OIDC account for user1"
 #   auth_method_id = boundary_auth_method_oidc.provider.id
 #   issuer  = "https://dev-1vdl8c0q.us.auth0.com/"              # updateme
-#   subject = "auth0|6077581e2ce19d006dfaf211"
+#   subject = ""
 # }
 # resource "boundary_managed_group" "oidc_group" {
 #   name           = "Auth0"
