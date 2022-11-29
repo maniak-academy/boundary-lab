@@ -77,7 +77,7 @@ challenges:
       -vault-address "http://vault-sql-server:8200" \
       -vault-token $VAULT_TOKEN \
       -worker-filter='"Vault" in "/tags/type"'
-```
+    ```
   tabs:
   - title: Boundary Worker
     type: terminal
@@ -98,8 +98,8 @@ challenges:
     path: /root/terraform-boundary/main.tf
   - title: Boundary Worker Editor
     type: code
-    hostname: boundary-worker 
+    hostname: boundary-worker
     path: /etc/boundary.d/pki-worker.hcl
   difficulty: basic
   timelimit: 6000
-checksum: "9158219211158133252"
+checksum: "961817316488925563"
