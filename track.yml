@@ -27,21 +27,20 @@ challenges:
   assignment: |-
     ```
     export BOUNDARY_ADDR="https://ad2ed0........d081c40.boundary.hashicorp.cloud"
-    export TF_VAR_boundary_addr=""
+    export TF_VAR_boundary_addr=${BOUNDARY_ADDR}
     ```
 
     ```
     export ADMIN_USER=....
-    export AUTH_METHOD_ID=ampw_ZYRq...
-    export TF_VAR_auth_method_id=ampw_ZYRq6mNmyr
+    export TF_VAR_auth_method_id=ampw_ZYRq6....
     ```
 
     ```
-    boundary authenticate password -auth-method-id=${BOUNDARY_AUTH_METHOD_ID} -login-name=$ADMIN_USER
+    boundary authenticate password -auth-method-id=${TF_VAR_auth_method_id} -login-name=$ADMIN_USER
     ```
 
     ```
-    export BOUNDARY_TOKEN=...
+    export BOUNDARY_TOKEN=
     ```
 
     ```
@@ -53,23 +52,24 @@ challenges:
     ```
 
     ```
+    systemctl restart boundary-worker
+    ```
+
+    ```
     vault login -method=userpass username=vault password=vault
-    vault token create \
+    export VAULT_TOKEN=$(vault token create \
       -no-default-policy=true \
       -policy="vault_admin" \
       -orphan=true \
       -period=20m \
       -renewable=true \
-      -format=json
-
-    export TF_VAR_vault_token=hvs.CAE.......
+      -format=json | jq -r .auth.client_token)
+    export TF_VAR_vault_token=${VAULT_TOKEN}
     ```
-
-
-    
-
-
-
+    ```
+    terraform init -upgrade
+    terraform init
+    ```
   tabs:
   - title: Boundary Worker
     type: terminal
@@ -86,8 +86,12 @@ challenges:
     hostname: windows-server
   - title: Terraform Editor
     type: code
-    hostname: hashistack-server
+    hostname: boundary-worker
     path: /root/terraform-boundary/main.tf
+  - title: Boundary Worker Editor
+    type: code
+    hostname: boundary-worker 
+    path: /etc/boundary.d/pki-worker.hcl
   difficulty: basic
   timelimit: 6000
-checksum: "12560864956872947292"
+checksum: "9158219211158133252"

@@ -67,7 +67,7 @@ resource "boundary_auth_method" "password" {
 #   value = boundary_managed_group.oidc_group.id
 # }
 
-resource "boundary_account" "users_acct" {
+resource "boundary_account_password" "users_acct" {
   for_each       = var.users
   name           = each.key
   description    = "User account for ${each.key}"
@@ -124,72 +124,71 @@ resource "boundary_scope" "core_infra" {
 }
 
 
-resource "boundary_host_catalog" "backend_servers" {
+resource "boundary_host_catalog_static" "backend_servers" {
   name        = "backend_servers"
   description = "Backend servers host catalog"
-  type        = "static"
   scope_id    = boundary_scope.core_infra.id
 }
 
-resource "boundary_host" "backend_linux_servers" {
+resource "boundary_host_static" "backend_linux_servers" {
   for_each        = var.backend_linux_server_ips
   type            = "static"
   name            = "backend_linux_server_service_${each.value}"
   description     = "Backend Linux server host"
   address         = each.key
-  host_catalog_id = boundary_host_catalog.backend_servers.id
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
 }
-resource "boundary_host" "backend_windows_servers" {
+resource "boundary_host_static" "backend_windows_servers" {
   for_each        = var.windows_server_ips
   type            = "static"
   name            = "windows_server_service_${each.value}"
   description     = "Backend server host"
   address         = each.key
-  host_catalog_id = boundary_host_catalog.backend_servers.id
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
 }
-# resource "boundary_host" "backend_K8s_servers" {
+# resource "boundary_host_static" "backend_K8s_servers" {
 #   for_each        = var.K8s_server_ips
 #   type            = "static"
 #   name            = "K8s_server_service_${each.value}"
 #   description     = "Backend server host"
 #   address         = each.key
-#   host_catalog_id = boundary_host_catalog.backend_K8s_servers.id
+#   host_catalog_id = boundary_host_catalog_static.backend_K8s_servers.id
 # }
 
-resource "boundary_host_set" "backend_servers_ssh" {
+resource "boundary_host_set_static" "backend_servers_ssh" {
   type            = "static"
   name            = "backend_servers_ssh"
   description     = "Host set for backend linux servers"
-  host_catalog_id = boundary_host_catalog.backend_servers.id
-  host_ids        = [for host in boundary_host.backend_linux_servers : host.id]
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
+  host_ids        = [for host in boundary_host_static.backend_linux_servers : host.id]
 }
-resource "boundary_host_set" "backend_servers_vault" {
+resource "boundary_host_set_static" "backend_servers_vault" {
   type            = "static"
   name            = "backend_servers_vault"
   description     = "Host set for backend vault servers"
-  host_catalog_id = boundary_host_catalog.backend_servers.id
-  host_ids        = [for host in boundary_host.backend_linux_servers : host.id]
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
+  host_ids        = [for host in boundary_host_static.backend_linux_servers : host.id]
 }
-resource "boundary_host_set" "backend_servers_psql" {
+resource "boundary_host_set_static" "backend_servers_psql" {
   type            = "static"
   name            = "backend_servers_psql"
   description     = "Host set for backend psql servers"
-  host_catalog_id = boundary_host_catalog.backend_servers.id
-  host_ids        = [for host in boundary_host.backend_linux_servers : host.id]
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
+  host_ids        = [for host in boundary_host_static.backend_linux_servers : host.id]
 }
-resource "boundary_host_set" "backend_servers_windows" {
+resource "boundary_host_set_static" "backend_servers_windows" {
   type            = "static"
   name            = "backend_servers_windows"
   description     = "Host set for backend windows servers"
-  host_catalog_id = boundary_host_catalog.backend_servers.id
-  host_ids        = [for host in boundary_host.backend_windows_servers : host.id]
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
+  host_ids        = [for host in boundary_host_static.backend_windows_servers : host.id]
 }
-# resource "boundary_host_set" "backend_servers_K8s" {
+# resource "boundary_host_set_static" "backend_servers_K8s" {
 #   type            = "static"
 #   name            = "backend_servers_K8s"
 #   description     = "Host set for backend K8s servers"
-#   host_catalog_id = boundary_host_catalog.backend_servers.id
-#   host_ids        = [for host in boundary_host.backend_K8s_servers : host.id]
+#   host_catalog_id = boundary_host_catalog_static.backend_servers.id
+#   host_ids        = [for host in boundary_host_static.backend_K8s_servers : host.id]
 # }
 
 # create target for accessing backend servers on port :22
@@ -207,7 +206,7 @@ resource "boundary_target" "backend_servers_ssh_target" {
   #   boundary_credential_library_vault.postgres_cred_library.id
   # ]
   host_source_ids = [
-    boundary_host_set.backend_servers_ssh.id
+    boundary_host_set_static.backend_servers_ssh.id
   ]
 }
 resource "boundary_target" "backend_servers_ssh_brokered" {
@@ -217,11 +216,11 @@ resource "boundary_target" "backend_servers_ssh_brokered" {
   scope_id     = boundary_scope.core_infra.id
   default_port = 22
   brokered_credential_source_ids = [
-    boundary_credential_username_password,
-    boundary_credential_ssh_private_key
+    boundary_credential_username_password.example.id,
+    boundary_credential_ssh_private_key.example.id
   ]  
   host_source_ids = [
-    boundary_host_set.backend_servers_ssh.id
+    boundary_host_set_static.backend_servers_ssh.id
   ]
 }
 resource "boundary_target" "backend_servers_psql_target" {
@@ -235,7 +234,7 @@ resource "boundary_target" "backend_servers_psql_target" {
     boundary_credential_library_vault.postgres_cred_library.id
   ]
   host_source_ids = [
-    boundary_host_set.backend_servers_psql.id
+    boundary_host_set_static.backend_servers_psql.id
   ]
 }
 resource "boundary_target" "backend_servers_vault_target" {
@@ -247,7 +246,7 @@ resource "boundary_target" "backend_servers_vault_target" {
   session_connection_limit = -1
   session_max_seconds = 600
   host_source_ids = [
-    boundary_host_set.backend_servers_vault.id
+    boundary_host_set_static.backend_servers_vault.id
   ]
 }
 resource "boundary_target" "backend_servers_windows_target" {
@@ -259,7 +258,7 @@ resource "boundary_target" "backend_servers_windows_target" {
   session_connection_limit = -1
   session_max_seconds = 600
   host_source_ids = [
-    boundary_host_set.backend_servers_windows.id
+    boundary_host_set_static.backend_servers_windows.id
   ]
 }
 
@@ -270,6 +269,7 @@ resource "boundary_credential_store_vault" "postgres_cred_store" {
   name        = "postgres_cred_store"
   description = "Vault credential store for postgres related access"
   address     = "http://vault-sql-server:8200"      # change to Vault address
+  #worker_filter - Needs to be added
   token       = var.vault_token # change to valid Vault token
   scope_id    = boundary_scope.core_infra.id
 }
@@ -293,7 +293,7 @@ resource "boundary_credential_library_vault" "postgres_cred_library" {
 resource "boundary_credential_store_static" "example" {
   name        = "example_static_credential_store"
   description = "My first static credential store!"
-  scope_id    = boundary_scope.project.id
+  scope_id    = boundary_scope.corp.id
 }
 resource "boundary_credential_username_password" "example" {
   name                = "example_username_password"
