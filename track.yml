@@ -70,6 +70,14 @@ challenges:
     terraform init -upgrade
     terraform init
     ```
+
+    ```
+    boundary credential-stores create vault \
+      -scope-id $PROJECT_ID \
+      -vault-address "http://vault-sql-server:8200" \
+      -vault-token $VAULT_TOKEN \
+      -worker-filter='"Vault" in "/tags/type"'
+```
   tabs:
   - title: Boundary Worker
     type: terminal

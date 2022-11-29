@@ -71,7 +71,7 @@ worker {
   public_addr = "${local_ipv4}"
   auth_storage_path = "/etc/boundary.d/"
   tags {
-    type = ["worker", "dev"]
+    type = ["worker", "dev", "vault"]
   }
 }
 EOF

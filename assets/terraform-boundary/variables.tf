@@ -46,3 +46,7 @@ variable "windows_server_ips" {
 #     "kubernetes",
 #   ]
 # }
+
+output "PROJECT_ID" {
+  value = boundary_scope.corp.id
+}
