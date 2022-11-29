@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    boundary = {
+      version = "~> 1.1.2"
+    }
+  }
+}
+
 provider "boundary" {
   addr                            = var.boundary_addr
   auth_method_id                  = var.auth_method_id
@@ -129,7 +137,7 @@ resource "boundary_host" "backend_linux_servers" {
   name            = "backend_linux_server_service_${each.value}"
   description     = "Backend Linux server host"
   address         = each.key
-  host_catalog_id = boundary_host_catalog.backend_linux_servers.id
+  host_catalog_id = boundary_host_catalog.backend_servers.id
 }
 resource "boundary_host" "backend_windows_servers" {
   for_each        = var.windows_server_ips
@@ -137,7 +145,7 @@ resource "boundary_host" "backend_windows_servers" {
   name            = "windows_server_service_${each.value}"
   description     = "Backend server host"
   address         = each.key
-  host_catalog_id = boundary_host_catalog.backend_windows_servers.id
+  host_catalog_id = boundary_host_catalog.backend_servers.id
 }
 # resource "boundary_host" "backend_K8s_servers" {
 #   for_each        = var.K8s_server_ips
@@ -185,7 +193,7 @@ resource "boundary_host_set" "backend_servers_windows" {
 # }
 
 # create target for accessing backend servers on port :22
-resource "boundary_target" "backend_servers_ssh" {
+resource "boundary_target" "backend_servers_ssh_target" {
   type         = "tcp"
   name         = "ssh_server"
   description  = "Backend SSH target"
@@ -193,6 +201,8 @@ resource "boundary_target" "backend_servers_ssh" {
   default_port = 22
   session_connection_limit = -1
   session_max_seconds = 600
+  # Add this manually once the provider is updated
+  # https://github.com/hashicorp/terraform-provider-boundary/issues/294
   # injected_credential_source_ids = [
   #   boundary_credential_library_vault.postgres_cred_library.id
   # ]
@@ -214,7 +224,7 @@ resource "boundary_target" "backend_servers_ssh_brokered" {
     boundary_host_set.backend_servers_ssh.id
   ]
 }
-resource "boundary_target" "backend_servers_psql" {
+resource "boundary_target" "backend_servers_psql_target" {
   type                     = "tcp"
   name                     = "postgres_server"
   description              = "Backend postgres target"
@@ -228,7 +238,7 @@ resource "boundary_target" "backend_servers_psql" {
     boundary_host_set.backend_servers_psql.id
   ]
 }
-resource "boundary_target" "backend_servers_vault" {
+resource "boundary_target" "backend_servers_vault_target" {
   type         = "tcp"
   name         = "vault_server"
   description  = "Backend SSH target"
@@ -240,10 +250,10 @@ resource "boundary_target" "backend_servers_vault" {
     boundary_host_set.backend_servers_vault.id
   ]
 }
-resource "boundary_target" "backend_servers_vault" {
+resource "boundary_target" "backend_servers_windows_target" {
   type         = "tcp"
-  name         = "vault_server"
-  description  = "Backend SSH target"
+  name         = "windows_server"
+  description  = "Backend windows target"
   scope_id     = boundary_scope.core_infra.id
   default_port = 3389
   session_connection_limit = -1
@@ -255,7 +265,7 @@ resource "boundary_target" "backend_servers_vault" {
 
 ######################################################################################
 # This might have to be done manually of the provider does not support worker filters
-#
+# https://github.com/hashicorp/terraform-provider-boundary/issues/294
 resource "boundary_credential_store_vault" "postgres_cred_store" {
   name        = "postgres_cred_store"
   description = "Vault credential store for postgres related access"

@@ -25,24 +25,35 @@ challenges:
     contents: Boundary provides a secure way to access hosts and critical systems
       without having to manage credentials or expose your network.
   assignment: |-
-    Login to Vault on using the "Server" tab
+    ```
+    export BOUNDARY_ADDR="https://ad2ed0........d081c40.boundary.hashicorp.cloud"
+    export TF_VAR_boundary_addr=""
+    ```
+
+    ```
+    export ADMIN_USER=....
+    export AUTH_METHOD_ID=ampw_ZYRq...
+    export TF_VAR_auth_method_id=ampw_ZYRq6mNmyr
+    ```
+
+    ```
+    boundary authenticate password -auth-method-id=${BOUNDARY_AUTH_METHOD_ID} -login-name=$ADMIN_USER
+    ```
+
+    ```
+    export BOUNDARY_TOKEN=...
+    ```
+
+    ```
+    boundary workers create controller-led -name instruqt-demo -token env://BOUNDARY_TOKEN
+    ```
+
+    ```
+    vi /etc/boundary.d/pki-worker.hc
+    ```
+
     ```
     vault login -method=userpass username=vault password=vault
-    ```
-    Next, we will configure Boundary using HashiCorp Terraform.
-
-    Terraform is an open-source infrastructure as code software tool that enables you to safely and predictably create, change, and improve infrastructure.
-
-    Change into the terraform-boundary directory where our Terraform config is stored
-    ```
-    cd terraform-boundary/
-    cat boundary-controller-policy.hcl
-    ```
-    Boundary needs to lookup, renew, and revoke tokens and leases in order to broker credentials from Vault properly.
-
-    Next, we will create a Vault token for the Boundary Server to use.
-
-    ```
     vault token create \
       -no-default-policy=true \
       -policy="vault_admin" \
@@ -50,28 +61,15 @@ challenges:
       -period=20m \
       -renewable=true \
       -format=json
+
+    export TF_VAR_vault_token=hvs.CAE.......
     ```
 
-    Save the "token" from the above output. You will pass this value to Terraform in the "apply" step below.
-    ```
-    #example: Save this from above. You will pass it to Terraform apply.
-    s.5DyL8vhy0AA3ke42WbWG4r5A
-    ```
 
-    Initialize terraform.
-    ```
-    #feed token to terraform
-    terraform init;
-    ```
-    Once satisified, apply the configuration. You will need to pass the Vault token from above to the Terraform CLI command.
-    ```
-    terraform apply --auto-approve;
-    ```
+    
 
-    Once Terraform successfully configures Boundary, we can move on to the next challenge.
-    ```
-    apply complete! Resources: 20 added, 0 changed, 0 destroyed.
-    ```
+
+
   tabs:
   - title: Boundary Worker
     type: terminal

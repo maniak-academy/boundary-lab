@@ -67,6 +67,7 @@ listener "tcp" {
 }
 
 worker {
+  controller_generated_activation_token = "REPLACE_ME"
   public_addr = "${local_ipv4}"
   auth_storage_path = "/etc/boundary.d/"
   tags {
