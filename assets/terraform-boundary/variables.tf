@@ -47,6 +47,3 @@ variable "windows_server_ips" {
 #   ]
 # }
 
-output "PROJECT_ID" {
-  value = boundary_scope.corp.id
-}

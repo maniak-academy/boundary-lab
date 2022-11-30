@@ -26,64 +26,129 @@ challenges:
       without having to manage credentials or expose your network.
   assignment: |-
     ```
-    export BOUNDARY_ADDR="https://ad2ed0........d081c40.boundary.hashicorp.cloud"
-    export TF_VAR_boundary_addr=${BOUNDARY_ADDR}
+    export BOUNDARY_ADDR=""
     ```
 
     ```
-    export ADMIN_USER=....
-    export TF_VAR_auth_method_id=ampw_ZYRq6....
+    export TF_VAR_boundary_addr=${BOUNDARY_ADDR}
+    ```
+
+    You will need to login to your Boundary cluster to get the initial auth method ID
+
+    ```
+    export ADMIN_USER=
+    export TF_VAR_auth_method_id=
     ```
 
     ```
     boundary authenticate password -auth-method-id=${TF_VAR_auth_method_id} -login-name=$ADMIN_USER
     ```
-
+    Set the BOundary Token
     ```
     export BOUNDARY_TOKEN=
     ```
 
-    ```
-    boundary workers create controller-led -name instruqt-demo -token env://BOUNDARY_TOKEN
-    ```
+
 
     ```
-    vi /etc/boundary.d/pki-worker.hc
-    ```
-
-    ```
-    systemctl restart boundary-worker
-    ```
-
-    ```
+    cd terraform-boundary/
     vault login -method=userpass username=vault password=vault
-    export VAULT_TOKEN=$(vault token create \
+    export BOUNDARY_VAULT_TOKEN=$(vault token create \
       -no-default-policy=true \
       -policy="vault_admin" \
       -orphan=true \
       -period=20m \
       -renewable=true \
       -format=json | jq -r .auth.client_token)
-    export TF_VAR_vault_token=${VAULT_TOKEN}
-    ```
-    ```
+    export TF_VAR_vault_token=${BOUNDARY_VAULT_TOKEN}
     terraform init -upgrade
     terraform init
     ```
+
+    ```
+    terraform apply --auto-approve;
+    ```
+    Set the PROJECT_ID  and TARGET_ID variables from the terraform output
     ```
     export PROJECT_ID=
     ```
     ```
-    boundary credential-stores create vault \
+    export TARGET_ID=
+    ```
+
+    Also, grab the Worker_token from the output.
+    Also grab the ID of your Boundary SaaS Cluster. It is the UUID in the address you copied from the portal.
+
+    Switch to the Boundary Worker tab and add them in.
+
+    ```
+    systemctl restart boundary-worker
+    ```
+
+    You can use the following command to check that your PKI worker was registered.
+    ```
+    boundary workers list -token env://BOUNDARY_TOKEN
+    ```
+
+    You can also use the following to troubleshoot systemd
+    ```
+    journalctl -u boundary-worker
+    ```
+
+    Now let's setup the Vault integration. This has to be done manually for now until the terraform provider is updated.
+    https://github.com/hashicorp/terraform-provider-boundary/issues/294
+
+
+    ```
+    export CRED_STORE_ID=$(boundary credential-stores create vault \
       -scope-id $PROJECT_ID \
       -vault-address "http://vault-sql-server:8200" \
-      -vault-token $VAULT_TOKEN \
-      -worker-filter='"Vault" in "/tags/type"'
+      -vault-token $BOUNDARY_VAULT_TOKEN \
+      -worker-filter='"vault" in "/tags/type"' \
+      -format json | jq -r '.item.id') \
+      -token env://BOUNDARY_TOKEN
     ```
+    Create credential library
+
+    ```
+    export CRED_LIB_ID=$(boundary credential-libraries create vault \
+      -credential-store-id $CRED_STORE_ID \
+      -vault-path "database/creds/vault_go_demo" \
+      -name "vault-cred-library" \
+      -format json | jq -r '.item.id') \
+      -token env://BOUNDARY_TOKEN
+    ```
+    Add the library to the Postgres Target
+
+    ```
+    boundary targets add-credential-sources \
+      -id $TARGET_ID \
+      -brokered-credential-source $CRED_LIB_ID \
+      -token env://BOUNDARY_TOKEN
+    ```
+
+  
+
+    ```
+    boundary targets authorize-session -id  $TARGET_ID -token env://BOUNDARY_TOKEN
+    ```
+
+    ```
+    boundary connect postgres -target-id $TARGET_ID --dbname vault_go_demo -token env://BOUNDARY_TOKEN
+    ```
+
   tabs:
   - title: Boundary Worker
     type: terminal
     hostname: boundary-worker
+  - title: Terraform Editor
+    type: code
+    hostname: boundary-worker
+    path: /root/terraform-boundary/main.tf
+  - title: Boundary Worker Editor
+    type: code
+    hostname: boundary-worker
+    path: /etc/boundary.d/pki-worker.hcl
   - title: Vault UI
     type: service
     hostname: vault-sql-server
@@ -94,14 +159,6 @@ challenges:
   - title: Windows Server
     type: terminal
     hostname: windows-server
-  - title: Terraform Editor
-    type: code
-    hostname: boundary-worker
-    path: /root/terraform-boundary/main.tf
-  - title: Boundary Worker Editor
-    type: code
-    hostname: boundary-worker
-    path: /etc/boundary.d/pki-worker.hcl
   difficulty: basic
-  timelimit: 6000
-checksum: "961817316488925563"
+  timelimit: 60000
+checksum: "4465629380288185529"
