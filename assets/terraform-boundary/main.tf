@@ -13,6 +13,15 @@ provider "boundary" {
   password_auth_method_password   = "password"
 }
 
+resource "boundary_worker" "instruqt_worker" {
+  scope_id    = boundary_scope.corp.id
+  description = "Dev and Vault Worker"
+  name        = "instruqt-worker-dev-vault"
+}
+output "Worker_token" {
+  value = boundary_worker.instruqt_worker.controller_generated_activation_token
+}
+
 resource "boundary_scope" "global" {
   global_scope = true
   description  = "My first global scope!"
@@ -193,13 +202,13 @@ resource "boundary_host_set_static" "backend_servers_windows" {
 
 # create target for accessing backend servers on port :22
 resource "boundary_target" "backend_servers_ssh_target" {
-  type         = "tcp"
-  name         = "ssh_server"
-  description  = "Backend SSH target"
-  scope_id     = boundary_scope.core_infra.id
-  default_port = 22
+  type                     = "tcp"
+  name                     = "ssh_server"
+  description              = "Backend SSH target"
+  scope_id                 = boundary_scope.core_infra.id
+  default_port             = 22
   session_connection_limit = -1
-  session_max_seconds = 600
+  session_max_seconds      = 600
   # Add this manually once the provider is updated
   # https://github.com/hashicorp/terraform-provider-boundary/issues/294
   # injected_credential_source_ids = [
@@ -218,7 +227,7 @@ resource "boundary_target" "backend_servers_ssh_brokered" {
   brokered_credential_source_ids = [
     boundary_credential_username_password.example.id,
     boundary_credential_ssh_private_key.example.id
-  ]  
+  ]
   host_source_ids = [
     boundary_host_set_static.backend_servers_ssh.id
   ]
@@ -238,25 +247,25 @@ resource "boundary_target" "backend_servers_psql_target" {
   ]
 }
 resource "boundary_target" "backend_servers_vault_target" {
-  type         = "tcp"
-  name         = "vault_server"
-  description  = "Backend SSH target"
-  scope_id     = boundary_scope.core_infra.id
-  default_port = 8200
+  type                     = "tcp"
+  name                     = "vault_server"
+  description              = "Backend SSH target"
+  scope_id                 = boundary_scope.core_infra.id
+  default_port             = 8200
   session_connection_limit = -1
-  session_max_seconds = 600
+  session_max_seconds      = 600
   host_source_ids = [
     boundary_host_set_static.backend_servers_vault.id
   ]
 }
 resource "boundary_target" "backend_servers_windows_target" {
-  type         = "tcp"
-  name         = "windows_server"
-  description  = "Backend windows target"
-  scope_id     = boundary_scope.core_infra.id
-  default_port = 3389
+  type                     = "tcp"
+  name                     = "windows_server"
+  description              = "Backend windows target"
+  scope_id                 = boundary_scope.core_infra.id
+  default_port             = 3389
   session_connection_limit = -1
-  session_max_seconds = 600
+  session_max_seconds      = 600
   host_source_ids = [
     boundary_host_set_static.backend_servers_windows.id
   ]
@@ -268,10 +277,10 @@ resource "boundary_target" "backend_servers_windows_target" {
 resource "boundary_credential_store_vault" "postgres_cred_store" {
   name        = "postgres_cred_store"
   description = "Vault credential store for postgres related access"
-  address     = "http://vault-sql-server:8200"      # change to Vault address
+  address     = "http://vault-sql-server:8200" # change to Vault address
   #worker_filter - Needs to be added
-  token       = var.vault_token # change to valid Vault token
-  scope_id    = boundary_scope.core_infra.id
+  token    = var.vault_token # change to valid Vault token
+  scope_id = boundary_scope.core_infra.id
 }
 resource "boundary_credential_library_vault" "postgres_cred_library" {
   name                = "postgres_cred_library"
@@ -303,10 +312,10 @@ resource "boundary_credential_username_password" "example" {
   password            = "my-password"
 }
 resource "boundary_credential_ssh_private_key" "example" {
-  name                   = "example_ssh_private_key"
-  description            = "My first ssh private key credential!"
-  credential_store_id    = boundary_credential_store_static.example.id
-  username               = "root"
-  private_key            = file("~/.ssh/id_rsa") # change to valid SSH Private Key
+  name                = "example_ssh_private_key"
+  description         = "My first ssh private key credential!"
+  credential_store_id = boundary_credential_store_static.example.id
+  username            = "root"
+  private_key         = file("~/.ssh/id_rsa") # change to valid SSH Private Key
 }
 

@@ -70,7 +70,9 @@ challenges:
     terraform init -upgrade
     terraform init
     ```
-
+    ```
+    export PROJECT_ID=
+    ```
     ```
     boundary credential-stores create vault \
       -scope-id $PROJECT_ID \
