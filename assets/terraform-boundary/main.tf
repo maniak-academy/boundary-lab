@@ -200,8 +200,8 @@ resource "boundary_host_set_static" "backend_servers_windows" {
 
 # create target for accessing backend servers on port :22
 resource "boundary_target" "backend_servers_ssh_target" {
-  type                     = "tcp"
-  name                     = "ssh_server"
+  type                     = "ssh"
+  name                     = "ssh_server_injected"
   description              = "Backend SSH target"
   scope_id                 = boundary_scope.core_infra.id
   default_port             = 22
@@ -218,14 +218,14 @@ resource "boundary_target" "backend_servers_ssh_target" {
   ]
 }
 resource "boundary_target" "backend_servers_ssh_brokered" {
-  type         = "tcp"
+  type         = "ssh"
   name         = "ssh_server_brokered"
   description  = "Backend SSH target for testing static credential store"
   scope_id     = boundary_scope.core_infra.id
   default_port = 22
   worker_filter = "\"vault\" in \"/tags/type\""  
   brokered_credential_source_ids = [
-    boundary_credential_username_password.example.id,
+    # boundary_credential_username_password.example.id,
     boundary_credential_ssh_private_key.example.id
   ]
   host_source_ids = [
@@ -277,8 +277,8 @@ resource "boundary_target" "backend_servers_windows_target" {
 ######################################################################################
 # This might have to be done manually of the provider does not support worker filters
 # https://github.com/hashicorp/terraform-provider-boundary/issues/294
-# resource "boundary_credential_store_vault" "postgres_cred_store" {
-#   name        = "postgres_cred_store"
+# resource "boundary_credential_store_vault" "vault_cred_store" {
+#   name        = "vault_cred_store"
 #   description = "Vault credential store for postgres related access"
 #   address     = "http://vault-sql-server:8200" # change to Vault address
 #   #worker_filter - Needs to be added
@@ -288,8 +288,16 @@ resource "boundary_target" "backend_servers_windows_target" {
 # resource "boundary_credential_library_vault" "postgres_cred_library" {
 #   name                = "postgres_cred_library"
 #   description         = "Vault credential library for postgres access"
-#   credential_store_id = boundary_credential_store_vault.postgres_cred_store.id
+#   credential_store_id = boundary_credential_store_vault.vault_cred_store.id
 #   path                = "database/creds/vault_go_demo" # change to Vault backend path
+#   http_method         = "GET"
+# }
+# resource "boundary_credential_library_vault" "SSH_injected_cred_library" {
+#   name                = "SSH_injected_cred_library"
+#   description         = "Vault credential library for injected SSH access"
+#   credential_store_id = boundary_credential_store_vault.vault_cred_store.id
+#   path                = "secret/data/my-secret" # change to Vault backend path
+#   credential_type     = "ssh_private_key"
 #   http_method         = "GET"
 # }
 # boundary credential-stores create vault \
@@ -328,8 +336,17 @@ output "ORG_ID" {
 output "PROJECT_ID" {
   value = boundary_scope.core_infra.id
 }
-output "TARGET_ID" {
+output "POSTGRES_TARGET_ID" {
   value = boundary_target.backend_servers_psql_target.id
+}
+output "SSH_BROKERED_TARGET_ID" {
+  value = boundary_target.backend_servers_ssh_brokered.id
+}
+output "SSH_INJECTED_TARGET_ID" {
+  value = boundary_target.backend_servers_ssh_target.id
+}
+output "VAULT_TARGET_ID" {
+  value = boundary_target.backend_servers_vault_target.id
 }
 output "Worker_token" {
   value = boundary_worker.instruqt_worker.controller_generated_activation_token

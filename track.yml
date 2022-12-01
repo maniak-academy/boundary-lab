@@ -37,6 +37,8 @@ challenges:
 
     ```
     export ADMIN_USER=
+    ```
+    ```
     export TF_VAR_auth_method_id=
     ```
 
@@ -47,8 +49,6 @@ challenges:
     ```
     export BOUNDARY_TOKEN=
     ```
-
-
 
     ```
     cd terraform-boundary/
@@ -68,18 +68,27 @@ challenges:
     ```
     terraform apply --auto-approve;
     ```
-    Set the PROJECT_ID  and TARGET_ID variables from the terraform output
+
+    Set env variables for our project and targets
     ```
-    export PROJECT_ID=
-    ```
-    ```
-    export TARGET_ID=
+    export PROJECT_ID=$(terraform output -raw PROJECT_ID)
+    export POSTGRES_TARGET_ID=$(terraform output -raw POSTGRES_TARGET_ID)
+    export SSH_BROKERED_TARGET_ID=$(terraform output -raw SSH_BROKERED_TARGET_ID)
+    export SSH_INJECTED_TARGET_ID=$(terraform output -raw SSH_INJECTED_TARGET_ID)
+    export VAULT_TARGET_ID=$(terraform output -raw VAULT_TARGET_ID)
+    echo $PROJECT_ID
+    echo $POSTGRES_TARGET_ID
+    echo $SSH_BROKERED_TARGET_ID
+    echo $SSH_INJECTED_TARGET_ID
+    echo $VAULT_TARGET_ID
     ```
 
-    Also, grab the Worker_token from the output.
+    Grab the Worker_token from the output.
     Also grab the ID of your Boundary SaaS Cluster. It is the UUID in the address you copied from the portal.
 
-    Switch to the Boundary Worker tab and add them in.
+    Switch to the Boundary Worker tab and add them in the code editor.
+
+    Now, start the boundary-worker
 
     ```
     systemctl restart boundary-worker
@@ -105,38 +114,65 @@ challenges:
       -vault-address "http://vault-sql-server:8200" \
       -vault-token $BOUNDARY_VAULT_TOKEN \
       -worker-filter='"vault" in "/tags/type"' \
-      -format json | jq -r '.item.id') \
-      -token env://BOUNDARY_TOKEN
+      -format json \
+      -token env://BOUNDARY_TOKEN | jq -r '.item.id')
     ```
-    Create credential library
+
+    POSTGRES DEMO
 
     ```
     export CRED_LIB_ID=$(boundary credential-libraries create vault \
       -credential-store-id $CRED_STORE_ID \
       -vault-path "database/creds/vault_go_demo" \
-      -name "vault-cred-library" \
-      -format json | jq -r '.item.id') \
-      -token env://BOUNDARY_TOKEN
-    ```
-    Add the library to the Postgres Target
+      -name "vault-cred-library-postgres" \
+      -format json \
+      -token env://BOUNDARY_TOKEN | jq -r '.item.id')
 
-    ```
     boundary targets add-credential-sources \
-      -id $TARGET_ID \
+      -id $POSTGRS_TARGET_ID \
       -brokered-credential-source $CRED_LIB_ID \
       -token env://BOUNDARY_TOKEN
     ```
 
-  
-
     ```
-    boundary targets authorize-session -id  $TARGET_ID -token env://BOUNDARY_TOKEN
-    ```
-
-    ```
-    boundary connect postgres -target-id $TARGET_ID --dbname vault_go_demo -token env://BOUNDARY_TOKEN
+    boundary targets authorize-session -id  $POSTGRS_TARGET_ID -token env://BOUNDARY_TOKEN
+    boundary connect postgres -target-id $POSTGRES_TARGET_ID --dbname vault_go_demo -token env://BOUNDARY_TOKEN
     ```
 
+    SSH INJECTED CREDS DEMO
+
+    ```
+    export CRED_LIB_ID_SSH=$(boundary credential-libraries create vault \
+      -credential-store-id $CRED_STORE_ID \
+      -vault-path "secret/data/my-secret" \
+      -name "vault-cred-library-ssh" \
+      -credential-type ssh_private_key \
+      -format json \
+      -token env://BOUNDARY_TOKEN | jq -r '.item.id')
+
+    boundary targets add-credential-sources \
+      -id $SSH_INJECTED_TARGET_ID \
+      -injected-application-credential-source $CRED_LIB_ID_SSH \
+      -token env://BOUNDARY_TOKEN
+    ```
+    ```
+    boundary targets authorize-session -id  $SSH_INJECTED_TARGET_ID -token env://BOUNDARY_TOKEN
+    boundary connect ssh -target-id $SSH_INJECTED_TARGET_ID -token env://BOUNDARY_TOKEN
+    ```
+
+    SSH STATIC CREDS (INTERNAL BOUNDARY CREDENTIAL STORE)
+    ```
+    boundary targets authorize-session -id $SSH_BROKERED_TARGET_ID
+    ```
+    ```
+    boundary connect ssh -target-id $SSH_BROKERED_TARGET_ID
+    ```
+
+
+    VAULT ACCESS DEMO
+    ```
+    boundary connect -exec vault -target-id ttcp_nKDEWHXkdg -- secrets list
+    ```
   tabs:
   - title: Boundary Worker
     type: terminal
@@ -161,4 +197,4 @@ challenges:
     hostname: windows-server
   difficulty: basic
   timelimit: 60000
-checksum: "4465629380288185529"
+checksum: "12857316760460751594"

@@ -139,6 +139,8 @@ vault read database/creds/vault_go_demo
 echo "Vault install complete" >> /tmp/install.log
 
 
+vault kv put secret/my-secret username=root private_key=@/root/.ssh/id_rsa
+
 #create a user for static testing
 # sudo useradd testuser
 # cat << EOF > testpassword.txt

@@ -1,9 +1,11 @@
-# SSH no secrets
-# SSH built-in credential store
-# SSH Brokered
+TODO
 # SSH Injected
-# Database Brokered
 # Windows Brokered
-# Vault API No secrets
 # K8s Brokered
+
+DONE
+# Database Brokered
+# SSH built-in credential store (SSH KEY)
+# Boundary exec to Vault API
+
 
