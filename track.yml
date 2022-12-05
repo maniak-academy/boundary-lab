@@ -209,5 +209,5 @@ challenges:
     type: terminal
     hostname: windows-server-02
   difficulty: basic
-  timelimit: 6000
-checksum: "9687160834221729544"
+  timelimit: 172800
+checksum: "12862459061225814430"
