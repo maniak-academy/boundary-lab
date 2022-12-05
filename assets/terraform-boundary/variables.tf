@@ -36,8 +36,7 @@ variable "backend_linux_server_ips" {
 variable "windows_server_ips" {
   type = set(string)
   default = [
-    "windows-server",
-    "windows-server-02"
+    "windows-server-02",
   ]
 }
 
