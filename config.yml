@@ -28,12 +28,7 @@ virtualmachines:
   environment:
     VAULT_ADDR: http://vault-sql-server:8200
   machine_type: n1-standard-1
-containers:
-- name: guac
-  image: gcr.io/instruqt/guacamole
-  shell: /bin/bash
-  ports:
-  - 8080
+
 
 # - name: kubernetes
 #   image: instruqt/instruqt/k3s-v1-25-0
