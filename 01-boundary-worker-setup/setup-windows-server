@@ -6,4 +6,5 @@ Expand-Archive -PATH boundary.zip -DestinationPath boundary
 
  cd .\boundary\Boundary\
 
- .\boundary-desktop_1.5.0_.exe
+# cd C:\Users\instruqt\Downloads\boundary\Boundary
+# .\boundary-desktop_1.5.0_.exe
