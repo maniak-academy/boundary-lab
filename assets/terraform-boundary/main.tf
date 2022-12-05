@@ -348,7 +348,10 @@ output "SSH_INJECTED_TARGET_ID" {
 output "VAULT_TARGET_ID" {
   value = boundary_target.backend_servers_vault_target.id
 }
-output "Worker_token" {
+output "WINDOWS_TARGET_ID" {
+  value = boundary_target.backend_servers_windows_target.id
+}
+output "WORKER_TOKEN" {
   value = boundary_worker.instruqt_worker.controller_generated_activation_token
 }
 

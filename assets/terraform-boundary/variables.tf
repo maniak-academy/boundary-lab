@@ -37,6 +37,7 @@ variable "windows_server_ips" {
   type = set(string)
   default = [
     "windows-server",
+    "windows-server-02"
   ]
 }
 

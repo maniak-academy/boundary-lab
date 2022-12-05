@@ -26,18 +26,18 @@ challenges:
       without having to manage credentials or expose your network.
   assignment: |-
     ```
-    export BOUNDARY_ADDR=""
+    export BOUNDARY_ADDR=
     ```
 
     ```
     export TF_VAR_boundary_addr=${BOUNDARY_ADDR}
     ```
 
-    You will need to login to your Boundary cluster to get the initial auth method ID
-
     ```
     export ADMIN_USER=
     ```
+    You will need to login to your Boundary cluster to get the initial auth method ID.
+    Access the Boundary UI through the HCP portal (click into your Boundary Cluster)
     ```
     export TF_VAR_auth_method_id=
     ```
@@ -76,6 +76,7 @@ challenges:
     export SSH_BROKERED_TARGET_ID=$(terraform output -raw SSH_BROKERED_TARGET_ID)
     export SSH_INJECTED_TARGET_ID=$(terraform output -raw SSH_INJECTED_TARGET_ID)
     export VAULT_TARGET_ID=$(terraform output -raw VAULT_TARGET_ID)
+    export WORKER_TOKEN=$(terraform output -raw WORKER_TOKEN)
     echo $PROJECT_ID
     echo $POSTGRES_TARGET_ID
     echo $SSH_BROKERED_TARGET_ID
@@ -85,6 +86,10 @@ challenges:
 
     Grab the Worker_token from the output.
     Also grab the ID of your Boundary SaaS Cluster. It is the UUID in the address you copied from the portal.
+    ```
+    echo $BOUNDARY_ADDR | awk -F/ '{print $3}' |  awk -F'.' '{print $1}'
+    echo $WORKER_TOKEN
+    ```
 
     Switch to the Boundary Worker tab and add them in the code editor.
 
@@ -129,7 +134,7 @@ challenges:
       -token env://BOUNDARY_TOKEN | jq -r '.item.id')
 
     boundary targets add-credential-sources \
-      -id $POSTGRS_TARGET_ID \
+      -id $POSTGRES_TARGET_ID \
       -brokered-credential-source $CRED_LIB_ID \
       -token env://BOUNDARY_TOKEN
     ```
@@ -177,14 +182,14 @@ challenges:
   - title: Boundary Worker
     type: terminal
     hostname: boundary-worker
-  - title: Terraform Editor
-    type: code
-    hostname: boundary-worker
-    path: /root/terraform-boundary/main.tf
   - title: Boundary Worker Editor
     type: code
     hostname: boundary-worker
     path: /etc/boundary.d/pki-worker.hcl
+  - title: Terraform Editor
+    type: code
+    hostname: boundary-worker
+    path: /root/terraform-boundary/main.tf
   - title: Vault UI
     type: service
     hostname: vault-sql-server
@@ -195,6 +200,14 @@ challenges:
   - title: Windows Server
     type: terminal
     hostname: windows-server
+  - title: Remote Desktop
+    type: service
+    hostname: guac
+    path: /#/client/c/srv01?username=guac_user&password=guac_password
+    port: 8080
+  - title: Windows Server 02
+    type: terminal
+    hostname: windows-server-02
   difficulty: basic
   timelimit: 60000
-checksum: "12857316760460751594"
+checksum: "5899974989235120268"

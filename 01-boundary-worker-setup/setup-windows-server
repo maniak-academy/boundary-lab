@@ -1,0 +1,15 @@
+$ErrorActionPreference = "Stop"
+
+if ( !(Test-Path -Path "C:\Users\instruqt\Desktop\check.txt" )) {
+  Write-Output "FAIL: Please create a check.txt file on the Desktop"
+  exit 1
+}
+
+Write-Output "C:\Users\instruqt\Desktop\check.txt exists"
+
+% curl.exe --output boundary.zip --url https://releases.hashicorp.com/boundary-desktop/1.5.0/boundary-desktop_1.5.0_window
+% s_amd64.zip
+
+
+
+
