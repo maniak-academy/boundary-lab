@@ -1,4 +1,5 @@
-slug: klaas-boundary-sandbox
+slug: klaas-boundary-demo
+id: belerrpnu1zl
 version: 0.0.1
 title: Klaas-(WIP) Test Boundary PKI Workers and Target Types (Unfinished)
 teaser: (WIP) Boundary Demo env (NOT READY)
@@ -7,7 +8,7 @@ icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/HashiCorp_Ic
 tags:
 - Vault
 - Boundary
-owner: hashicorp`
+owner: hashicorp
 developers:
 - aklaas@hashicorp.com
 private: true
@@ -15,6 +16,7 @@ published: false
 maintenance: true
 challenges:
 - slug: 01-boundary-worker-setup
+  id: vhabntbdidpy
   type: challenge
   title: Configure Boundary and Vault
   teaser: Configure Vault to issue credentials for Boundary.
@@ -198,5 +200,9 @@ challenges:
   - title: Windows Server
     type: terminal
     hostname: windows-server
+  - title: Windows Server 02
+    type: terminal
+    hostname: windows-server-02
   difficulty: basic
-  timelimit: 60000
+  timelimit: 6000
+checksum: "5151906557095052122"
