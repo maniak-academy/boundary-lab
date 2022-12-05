@@ -6,10 +6,10 @@ cat <<'EOF' > /config/guacamole/user-mapping.xml
         <connection name="srv01">
             <protocol>rdp</protocol>
             <!-- hostname as defined in instruqt config.yml -->
-            <param name="hostname">windows</param>
+            <param name="hostname">windows-server</param>
             <param name="port">3389</param>
             <!-- domain/username/password must be valid for the target host -->
-            <param name="domain">windows-server</param>
+            <param name="domain"></param>
             <param name="username">instruqt</param>
             <param name="password">Passw0rd!</param>
             <param name="ignore-cert">true</param>
