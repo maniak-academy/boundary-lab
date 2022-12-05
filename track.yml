@@ -200,6 +200,14 @@ challenges:
   - title: Windows Server
     type: terminal
     hostname: windows-server
+  - title: Remote Desktop
+    type: service
+    hostname: guac
+    path: /#/client/c/srv01?username=guac_user&password=guac_password
+    port: 8080
+  - title: Windows Server 02
+    type: terminal
+    hostname: windows-server-02
   difficulty: basic
   timelimit: 60000
 checksum: "5899974989235120268"
