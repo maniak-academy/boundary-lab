@@ -173,10 +173,33 @@ challenges:
     boundary connect ssh -target-id $SSH_BROKERED_TARGET_ID
     ```
 
-
     VAULT ACCESS DEMO
     ```
     boundary connect -exec vault -target-id ttcp_nKDEWHXkdg -- secrets list
+    ```
+
+    Windows!
+    ```
+    cd C:\Users\instruqt\Downloads\boundary\Boundary
+    .\boundary-desktop_1.5.0_.exe
+    ```
+    If you use the boundary-desktop, login and create a connection to the target
+    ``` 
+    mstsc /v:127.0.0.1:49814
+    ```
+    If you want to use powershell:
+    ```
+    $env:BOUNDARY_ADDR = 
+    ```
+    ```
+    $env:ADMIN_USER =
+    ```
+    ```
+    $env:AUTH_METHOD = 
+    ```
+    Login and grab the id of the target
+    ```
+    C:\Users\instruqt\Downloads\boundary-cli\boundary.exe authenticate password -auth-method-id=$env:AUTH_METHOD -login-name=$env:ADMIN_USER
     ```
   tabs:
   - title: Boundary Worker
@@ -210,4 +233,4 @@ challenges:
     hostname: windows-server-02
   difficulty: basic
   timelimit: 172800
-checksum: "12626697604425744568"
+checksum: "14335697925973032185"
