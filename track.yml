@@ -200,9 +200,6 @@ challenges:
   - title: Windows Server
     type: terminal
     hostname: windows-server
-  - title: Windows Server 02
-    type: terminal
-    hostname: windows-server-02
   difficulty: basic
   timelimit: 60000
 checksum: "5899974989235120268"
