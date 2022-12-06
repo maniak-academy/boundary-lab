@@ -23,7 +23,7 @@ virtualmachines:
   environment:
     VAULT_ADDR: http://vault-sql-server:8200
   machine_type: n1-standard-1
-- name: windows-server-02
+- name: windows-destination
   image: instruqt/windows-server 
   environment:
     VAULT_ADDR: http://vault-sql-server:8200

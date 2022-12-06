@@ -177,30 +177,6 @@ challenges:
     ```
     boundary connect -exec vault -target-id ttcp_nKDEWHXkdg -- secrets list
     ```
-
-    Windows!
-    ```
-    cd C:\Users\instruqt\Downloads\boundary\Boundary
-    .\boundary-desktop_1.5.0_.exe
-    ```
-    If you use the boundary-desktop, login and create a connection to the target
-    ``` 
-    mstsc /v:127.0.0.1:49814
-    ```
-    If you want to use powershell:
-    ```
-    $env:BOUNDARY_ADDR = 
-    ```
-    ```
-    $env:ADMIN_USER =
-    ```
-    ```
-    $env:AUTH_METHOD = 
-    ```
-    Login and grab the id of the target
-    ```
-    C:\Users\instruqt\Downloads\boundary-cli\boundary.exe authenticate password -auth-method-id=$env:AUTH_METHOD -login-name=$env:ADMIN_USER
-    ```
   tabs:
   - title: Boundary Worker
     type: terminal
@@ -220,17 +196,62 @@ challenges:
   - title: Vault & SQL Server
     type: terminal
     hostname: vault-sql-server
+  difficulty: basic
+  timelimit: 172800
+- slug: 02-windows-demo
+  type: challenge
+  title: Using Boundary with Windows
+  teaser: RDP to a windows Server
+  notes:
+  - type: text
+    contents: Boundary provides a secure way to access hosts and critical systems
+      without having to manage credentials or expose your network.
+  assignment: |-
+
+    Windows!
+    ```
+    cd C:\Users\instruqt\Downloads\boundary\Boundary
+    ```
+    ```
+    .\boundary-desktop_1.5.0_.exe
+    ```
+    If you use the boundary-desktop, login and create a connection to the target
+    ```
+    mstsc /v:127.0.0.1:49814
+    ```
+    If you want to use powershell:
+    ```
+    $Env:BOUNDARY_ADDR =
+    ```
+    ```
+    $Env:ADMIN_USER =
+    ```
+    ```
+    $Env:AUTH_METHOD =
+    ```
+    Login 
+    ```
+    C:\Users\instruqt\Downloads\boundary-cli\boundary.exe authenticate password -auth-method-id $Env:AUTH_METHOD -login-name $Env:ADMIN_USER
+    ```
+    Grab the ID of the target from the console (You could do this via command line as well)
+    ```
+    $env:TARGET_ID = 
+    ```
+    ```
+    C:\Users\instruqt\Downloads\boundary-cli\boundary.exe connect rdp -target-id $Env:TARGET_ID
+    ```
+  tabs:
   - title: Remote Desktop
     type: service
     hostname: guac
     path: /#/client/c/srv01?username=guac_user&password=guac_password
     port: 8080
-  - title: Windows Server
+  - title: Windows Server PS
     type: terminal
     hostname: windows-server
-  - title: Windows Server 02
+  - title: Windows Destination
     type: terminal
-    hostname: windows-server-02
+    hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "14335697925973032185"
+checksum: "11237632707616606255"
