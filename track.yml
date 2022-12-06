@@ -199,6 +199,7 @@ challenges:
   difficulty: basic
   timelimit: 172800
 - slug: 02-windows-demo
+  id: mvaxb0t9vlfo
   type: challenge
   title: Using Boundary with Windows
   teaser: RDP to a windows Server
@@ -206,7 +207,7 @@ challenges:
   - type: text
     contents: Boundary provides a secure way to access hosts and critical systems
       without having to manage credentials or expose your network.
-  assignment: |-
+  assignment: |2-
 
     Windows!
     ```
@@ -229,13 +230,13 @@ challenges:
     ```
     $Env:AUTH_METHOD =
     ```
-    Login 
+    Login
     ```
     C:\Users\instruqt\Downloads\boundary-cli\boundary.exe authenticate password -auth-method-id $Env:AUTH_METHOD -login-name $Env:ADMIN_USER
     ```
     Grab the ID of the target from the console (You could do this via command line as well)
     ```
-    $env:TARGET_ID = 
+    $env:TARGET_ID =
     ```
     ```
     C:\Users\instruqt\Downloads\boundary-cli\boundary.exe connect rdp -target-id $Env:TARGET_ID
@@ -254,4 +255,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "11237632707616606255"
+checksum: "15960800444868051973"
