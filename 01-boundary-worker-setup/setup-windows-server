@@ -8,6 +8,6 @@ curl.exe --output boundary_cli.zip --url https://releases.hashicorp.com/boundary
 Expand-Archive -PATH boundary.zip -DestinationPath boundary-desktop
 Expand-Archive -PATH boundary_cli.zip -DestinationPath boundary-cli
 
-cd .\boundary-desktop\Boundary\
-cd .\boundary-cli\
+# cd .\boundary-desktop\Boundary\
+# cd .\boundary-cli\
 

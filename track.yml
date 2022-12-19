@@ -1,9 +1,10 @@
 slug: klaas-boundary-demo
 id: belerrpnu1zl
 version: 0.0.1
-title: Klaas-(WIP) Test Boundary PKI Workers and Target Types (Unfinished)
-teaser: (WIP) Boundary Demo env (NOT READY)
-description: (WIP) Test Boundary PKI Workers and Target Types
+title: Klaas-(WIP) Demo Boundary PKI Workers and Target Types (SSH, Postgres, Exec,
+  RDP)
+teaser: Boundary Demo env (SSH, PSQL, Exec, RDP)
+description: Test Boundary PKI Workers and various Target types
 icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/HashiCorp_Icon_Black.png
 tags:
 - Vault
@@ -11,8 +12,6 @@ tags:
 owner: hashicorp
 developers:
 - aklaas@hashicorp.com
-private: true
-published: false
 maintenance: true
 challenges:
 - slug: 01-boundary-worker-setup
@@ -25,31 +24,42 @@ challenges:
     contents: Boundary provides a secure way to access hosts and critical systems
       without having to manage credentials or expose your network.
   assignment: |-
+    NOTE: (username: vault, password: vault) for the Vault UI tab (userpass auth method)
+
+    First, We need to create a Boundary cluster at https://portal.cloud.hashicorp.com/sign-in
+    Switch to the Boundary tab (on the left) and create a Boundary cluster. Remember your admin credentials.
+
+    Once created, copy the Boundary cluster address URL and switch back to the "Boundary Worker" Instruqt tab.
+
     ```
     export BOUNDARY_ADDR=
     ```
-
+    Set the TF var as well (used later).
     ```
     export TF_VAR_boundary_addr=${BOUNDARY_ADDR}
     ```
-
+    Set the admin user you created in the HCP portal.
     ```
     export ADMIN_USER=
     ```
-    You will need to login to your Boundary cluster to get the initial auth method ID.
-    Access the Boundary UI through the HCP portal (click into your Boundary Cluster)
+    You will need to login to your Boundary cluster to get the initial auth method ID. (For now...)
+    Access the Boundary UI through the HCP portal (click into your Boundary Cluster from the HCP portal).
+    It should say "Open Admin UI" as a blue button at the top right of the cluster's page in HCP.
+
+    On the left hand side click the "Auth Methods" tab and copy the method id.
+    Set the id.
     ```
     export TF_VAR_auth_method_id=
     ```
-
+    Login to the cluster. Once logged in, a Boundary token will be returned.
     ```
     boundary authenticate password -auth-method-id=${TF_VAR_auth_method_id} -login-name=$ADMIN_USER
     ```
-    Set the BOundary Token
+    Set the Boundary token.
     ```
     export BOUNDARY_TOKEN=
     ```
-
+    Next we will configure our cluster with demo scopes, catalogs, hosts, targets, etc.
     ```
     cd terraform-boundary/
     vault login -method=userpass username=vault password=vault
@@ -64,7 +74,7 @@ challenges:
     terraform init -upgrade
     terraform init
     ```
-
+    Run terraform apply.
     ```
     terraform apply --auto-approve;
     ```
@@ -83,23 +93,22 @@ challenges:
     echo $SSH_INJECTED_TARGET_ID
     echo $VAULT_TARGET_ID
     ```
-
-    Grab the Worker_token from the output.
-    Also grab the ID of your Boundary SaaS Cluster. It is the UUID in the address you copied from the portal.
+    The below command will output the worker_token from the Terraform output as well as the UUID of the cluster.
     ```
     echo $BOUNDARY_ADDR | awk -F/ '{print $3}' |  awk -F'.' '{print $1}'
     echo $WORKER_TOKEN
     ```
+    Switch to the Boundary Worker tab and add them in the code editor in place of the REPLACEME variables.
 
-    Switch to the Boundary Worker tab and add them in the code editor.
+    Save the file and switch back to the "Boundary Worker" tab.
 
-    Now, start the boundary-worker
+    Now, start the boundary-worker.
 
     ```
     systemctl restart boundary-worker
     ```
 
-    You can use the following command to check that your PKI worker was registered.
+    You can use the following command to check that your PKI worker was registered. You will likely see 3 KMS workers (Default) and your self managed "PKI" worker.
     ```
     boundary workers list -token env://BOUNDARY_TOKEN
     ```
@@ -124,6 +133,7 @@ challenges:
     ```
 
     POSTGRES DEMO
+    First, create the credential-library. This tells Boundary where to grab a cred from Vault.
 
     ```
     export CRED_LIB_ID=$(boundary credential-libraries create vault \
@@ -138,13 +148,15 @@ challenges:
       -brokered-credential-source $CRED_LIB_ID \
       -token env://BOUNDARY_TOKEN
     ```
-
+    Authorize a session (optional). This returns a brokered credential.
+    Connect to the target.
     ```
-    boundary targets authorize-session -id  $POSTGRS_TARGET_ID -token env://BOUNDARY_TOKEN
+    boundary targets authorize-session -id  $POSTGRES_TARGET_ID -token env://BOUNDARY_TOKEN
     boundary connect postgres -target-id $POSTGRES_TARGET_ID --dbname vault_go_demo -token env://BOUNDARY_TOKEN
     ```
 
     SSH INJECTED CREDS DEMO
+    Injected: No credential returned to user. "Passwordless"
 
     ```
     export CRED_LIB_ID_SSH=$(boundary credential-libraries create vault \
@@ -160,12 +172,14 @@ challenges:
       -injected-application-credential-source $CRED_LIB_ID_SSH \
       -token env://BOUNDARY_TOKEN
     ```
+    Connect to the target via the injected credential (The private key is not returned). You can use the Vault admin UI if you need to see the key.
     ```
     boundary targets authorize-session -id  $SSH_INJECTED_TARGET_ID -token env://BOUNDARY_TOKEN
     boundary connect ssh -target-id $SSH_INJECTED_TARGET_ID -token env://BOUNDARY_TOKEN
     ```
 
     SSH STATIC CREDS (INTERNAL BOUNDARY CREDENTIAL STORE)
+    This will leverage Boundary's built-in credential store (configured via Terraform above).
     ```
     boundary targets authorize-session -id $SSH_BROKERED_TARGET_ID
     ```
@@ -174,9 +188,12 @@ challenges:
     ```
 
     VAULT ACCESS DEMO
+    Using Boundary exec to create a secure TCP connection to wrap the Vault binary.
     ```
-    boundary connect -exec vault -target-id ttcp_nKDEWHXkdg -- secrets list
+    boundary connect -exec vault -target-id $VAULT_TARGET_ID -- secrets list
     ```
+
+    Let's move on to the RDP/Windows demo.
   tabs:
   - title: Boundary Worker
     type: terminal
@@ -209,10 +226,17 @@ challenges:
       without having to manage credentials or expose your network.
   assignment: |2-
 
-    Windows!
+    Switch to the "remote Desktop tab". This is connected to a front end windows servers and will simulate the client in our demo.
+
+    Open a powershell. (click windows button bottom left, then search for powershell).
+
+    Remember: Windows uses Ctrl-C not Cmd-C for copy.
+
+    Change to the Boundary (desktop) directory.
     ```
-    cd C:\Users\instruqt\Downloads\boundary\Boundary
+    cd C:\Users\instruqt\Downloads\boundary-desktop\Boundary
     ```
+    launch the desktop
     ```
     .\boundary-desktop_1.5.0_.exe
     ```
@@ -220,27 +244,35 @@ challenges:
     ```
     mstsc /v:127.0.0.1:49814
     ```
-    If you want to use powershell:
+    If you want to use powershell, set the following environment variables
     ```
-    $Env:BOUNDARY_ADDR =
-    ```
-    ```
-    $Env:ADMIN_USER =
+    $Env:BOUNDARY_ADDR = ""
     ```
     ```
-    $Env:AUTH_METHOD =
+    $Env:ADMIN_USER = ""
     ```
-    Login
+    ```
+    $Env:AUTH_METHOD = ""
+    ```
+    Next Login to boundary from powershell.
     ```
     C:\Users\instruqt\Downloads\boundary-cli\boundary.exe authenticate password -auth-method-id $Env:AUTH_METHOD -login-name $Env:ADMIN_USER
     ```
-    Grab the ID of the target from the console (You could do this via command line as well)
+    Grab the ID of the target from the console (You could do this via command line as well).
+    Grab this information from the corp_one scope in your Boundary Cluster admin UI. (accessible from HCP portal)
+    The target is the "windows_server" target id under your corp_one scope -> targets section.
     ```
     $env:TARGET_ID =
     ```
     ```
     C:\Users\instruqt\Downloads\boundary-cli\boundary.exe connect rdp -target-id $Env:TARGET_ID
     ```
+    Login with the following credentials
+    ```
+    u: instruqt
+    p: Passw0rd!
+    ```
+    We could if optionally used Vault's LDAP/AD secret engine or K/V secret engine for brokering these credentials.
   tabs:
   - title: Remote Desktop
     type: service
@@ -255,4 +287,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "15960800444868051973"
+checksum: "3059571898160061151"
