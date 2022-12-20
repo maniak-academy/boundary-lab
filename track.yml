@@ -17,7 +17,7 @@ challenges:
 - slug: 01-boundary-worker-setup
   id: vhabntbdidpy
   type: challenge
-  title: Configure Boundary and Vault
+  title: Configuration & Boundary (SSH, Postgres, Exec)
   teaser: Configure Vault to issue credentials for Boundary.
   notes:
   - type: text
@@ -231,6 +231,20 @@ challenges:
     Open a powershell. (click windows button bottom left, then search for powershell).
 
     Remember: Windows uses Ctrl-C not Cmd-C for copy.
+
+    Install Boundary Cli and Boundary Desktop
+
+    ```
+    cd C:\Users\instruqt\Downloads\
+    curl.exe --output boundary.zip --url https://releases.hashicorp.com/boundary-desktop/1.5.0/boundary-desktop_1.5.0_windows_amd64.zip
+
+
+    cd C:\Users\instruqt\Downloads\
+    curl.exe --output boundary_cli.zip --url https://releases.hashicorp.com/boundary/0.11.1/boundary_0.11.1_windows_amd64.zip
+
+    Expand-Archive -PATH boundary.zip -DestinationPath boundary-desktop
+    Expand-Archive -PATH boundary_cli.zip -DestinationPath boundary-cli
+    ```
 
     Change to the Boundary (desktop) directory.
     ```
