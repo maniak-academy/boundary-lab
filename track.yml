@@ -1,8 +1,8 @@
 slug: klaas-boundary-demo
 id: belerrpnu1zl
 version: 0.0.1
-title: Klaas-(WIP) Demo Boundary PKI Workers and Target Types (SSH, Postgres, Exec,
-  RDP)
+title: WIP - Demo Boundary PKI Workers and Target Types (SSH, Postgres, Exec, RDP)
+  (aklaas)
 teaser: Boundary Demo env (SSH, PSQL, Exec, RDP)
 description: Test Boundary PKI Workers and various Target types
 icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/HashiCorp_Icon_Black.png
@@ -254,7 +254,7 @@ challenges:
     You will need to input the boundary cluster URL. Login with your credentials and click the "connect" button for the windows_server target .
 
     Open a new powershell and connect. (replace the port with the output from the Boundary desktop above).
-    
+
     ```
     mstsc /v:127.0.0.1:49814
     ```
@@ -307,4 +307,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "15121166887001124447"
+checksum: "1296020212731734039"
