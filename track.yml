@@ -249,11 +249,22 @@ challenges:
     ```
     C:\Users\instruqt\Downloads\boundary-desktop\Boundary\boundary-desktop_1.5.0_.exe
     ```
-    If you use the boundary-desktop, login and create a connection to the target
+    If you use the boundary-desktop, login and create a connection to the target.
+
+    You will need to input the boundary cluster URL. Login with your credentials and click the "connect" button for the windows_server target .
+
+    Open a new powershell and connect. (replace the port with the output from the Boundary desktop above).
+    
     ```
     mstsc /v:127.0.0.1:49814
     ```
-    If you want to use powershell, set the following environment variables
+    Login with the following credentials
+    ```
+    u: instruqt
+    p: Passw0rd!
+    ```
+
+    If you want to use powershell and the Boundary CLI directly, set the following environment variables
     ```
     $Env:BOUNDARY_ADDR = ""
     ```
@@ -271,7 +282,7 @@ challenges:
     Grab this information from the corp_one scope in your Boundary Cluster admin UI. (accessible from HCP portal)
     The target is the "windows_server" target id under your corp_one scope -> targets section.
     ```
-    $env:TARGET_ID =
+    $env:TARGET_ID = ""
     ```
     ```
     C:\Users\instruqt\Downloads\boundary-cli\boundary.exe connect rdp -target-id $Env:TARGET_ID
@@ -296,4 +307,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "15333738564641651452"
+checksum: "15121166887001124447"
