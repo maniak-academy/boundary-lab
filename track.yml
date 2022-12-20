@@ -245,14 +245,9 @@ challenges:
     Expand-Archive -PATH boundary.zip -DestinationPath boundary-desktop
     Expand-Archive -PATH boundary_cli.zip -DestinationPath boundary-cli
     ```
-
-    Change to the Boundary (desktop) directory.
+    Launch the Boundary Desktop App.
     ```
-    cd C:\Users\instruqt\Downloads\boundary-desktop\Boundary
-    ```
-    launch the desktop
-    ```
-    .\boundary-desktop_1.5.0_.exe
+    C:\Users\instruqt\Downloads\boundary-desktop\Boundary\boundary-desktop_1.5.0_.exe
     ```
     If you use the boundary-desktop, login and create a connection to the target
     ```
@@ -301,4 +296,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "3059571898160061151"
+checksum: "15333738564641651452"
