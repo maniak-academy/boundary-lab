@@ -224,7 +224,7 @@ resource "boundary_target" "backend_servers_ssh_brokered" {
   scope_id     = boundary_scope.core_infra.id
   default_port = 22
   worker_filter = "\"vault\" in \"/tags/type\""  
-  brokered_credential_source_ids = [
+  injected_application_credential_source_ids = [
     # boundary_credential_username_password.example.id,
     boundary_credential_ssh_private_key.example.id
   ]
@@ -354,4 +354,3 @@ output "WINDOWS_TARGET_ID" {
 output "WORKER_TOKEN" {
   value = boundary_worker.instruqt_worker.controller_generated_activation_token
 }
-
