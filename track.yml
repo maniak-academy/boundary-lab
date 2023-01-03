@@ -98,7 +98,7 @@ challenges:
     echo $BOUNDARY_ADDR | awk -F/ '{print $3}' |  awk -F'.' '{print $1}'
     echo $WORKER_TOKEN
     ```
-    Switch to the "Boundary Worker Editor" tab and add them in the code editor in place of the REPLACEME variables. 
+    Switch to the "Boundary Worker Editor" tab and add them in the code editor in place of the REPLACEME variables.
     (Click on the file on the left hand side to open it in the editor)
 
     Save the file and switch back to the "Boundary Worker" tab.
@@ -133,7 +133,7 @@ challenges:
       -token env://BOUNDARY_TOKEN | jq -r '.item.id')
     ```
 
-    POSTGRES DEMO
+    **POSTGRES DEMO**
 
     First, create the credential-library. This tells Boundary where to grab a cred from Vault.
 
@@ -156,7 +156,7 @@ challenges:
     boundary connect postgres -target-id $POSTGRES_TARGET_ID --dbname vault_go_demo -token env://BOUNDARY_TOKEN
     ```
 
-    SSH INJECTED CREDS DEMO
+    **SSH INJECTED CREDS DEMO**
 
     Injected: No credential is returned to user. (i.e. Passwordless)
 
@@ -180,7 +180,7 @@ challenges:
     boundary connect ssh -target-id $SSH_INJECTED_TARGET_ID -token env://BOUNDARY_TOKEN
     ```
 
-    SSH STATIC CREDS (INTERNAL BOUNDARY CREDENTIAL STORE)
+    **SSH STATIC CREDS (INTERNAL BOUNDARY CREDENTIAL STORE)**
 
     This will leverage Boundary's built-in credential store (configured via Terraform above).
     ```
@@ -190,7 +190,7 @@ challenges:
     boundary connect ssh -target-id $SSH_BROKERED_TARGET_ID
     ```
 
-    VAULT ACCESS DEMO
+    **VAULT ACCESS DEMO**
 
     Using Boundary exec to create a secure TCP connection to wrap the Vault binary.
     ```
@@ -268,6 +268,8 @@ challenges:
     p: Passw0rd!
     ```
 
+    **BOUNDARY CLI**
+
     If you want to use powershell and the Boundary CLI directly, set the following environment variables
     ```
     $Env:BOUNDARY_ADDR = ""
@@ -311,4 +313,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "1296020212731734039"
+checksum: "16363443506220100296"
