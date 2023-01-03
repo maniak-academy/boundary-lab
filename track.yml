@@ -26,10 +26,10 @@ challenges:
   assignment: |-
     NOTE: (username: vault, password: vault) for the Vault UI tab (userpass auth method)
 
-    First, We need to create a Boundary cluster at https://portal.cloud.hashicorp.com/sign-in
-    Switch to the Boundary tab (on the left) and create a Boundary cluster. Remember your admin credentials.
+    First, We need to create a Boundary cluster at https://portal.cloud.hashicorp.com/sign-in.
+    Once logged in there, switch to the Boundary tab (on the left) and create a Boundary cluster. Remember your admin credentials.
 
-    Once created, copy the Boundary cluster address URL and switch back to the "Boundary Worker" Instruqt tab.
+    After creation, copy the Boundary cluster address URL and switch back to the "Boundary Worker" Instruqt tab.
 
     ```
     export BOUNDARY_ADDR=
@@ -42,11 +42,11 @@ challenges:
     ```
     export ADMIN_USER=
     ```
-    You will need to login to your Boundary cluster to get the initial auth method ID. (For now...)
+    You will need to login to your Boundary cluster to get the initial auth method ID. (For now).
     Access the Boundary UI through the HCP portal (click into your Boundary Cluster from the HCP portal).
     It should say "Open Admin UI" as a blue button at the top right of the cluster's page in HCP.
 
-    On the left hand side click the "Auth Methods" tab and copy the method id.
+    On the left hand side in your Boundary cluster Admin UI click the "Auth Methods" tab and copy the method id.
     Set the id.
     ```
     export TF_VAR_auth_method_id=
@@ -59,7 +59,7 @@ challenges:
     ```
     export BOUNDARY_TOKEN=
     ```
-    Next we will configure our cluster with demo scopes, catalogs, hosts, targets, etc.
+    Next we will configure our cluster with demo scopes, catalogs, hosts, targets, etc. using Terraform.
     ```
     cd terraform-boundary/
     vault login -method=userpass username=vault password=vault
@@ -98,7 +98,8 @@ challenges:
     echo $BOUNDARY_ADDR | awk -F/ '{print $3}' |  awk -F'.' '{print $1}'
     echo $WORKER_TOKEN
     ```
-    Switch to the Boundary Worker tab and add them in the code editor in place of the REPLACEME variables.
+    Switch to the "Boundary Worker Editor" tab and add them in the code editor in place of the REPLACEME variables. 
+    (Click on the file on the left hand side to open it in the editor)
 
     Save the file and switch back to the "Boundary Worker" tab.
 
@@ -133,6 +134,7 @@ challenges:
     ```
 
     POSTGRES DEMO
+
     First, create the credential-library. This tells Boundary where to grab a cred from Vault.
 
     ```
@@ -148,15 +150,15 @@ challenges:
       -brokered-credential-source $CRED_LIB_ID \
       -token env://BOUNDARY_TOKEN
     ```
-    Authorize a session (optional). This returns a brokered credential.
-    Connect to the target.
+    Authorize a session (optional). This returns a brokered credential and connect to the target.
     ```
     boundary targets authorize-session -id  $POSTGRES_TARGET_ID -token env://BOUNDARY_TOKEN
     boundary connect postgres -target-id $POSTGRES_TARGET_ID --dbname vault_go_demo -token env://BOUNDARY_TOKEN
     ```
 
     SSH INJECTED CREDS DEMO
-    Injected: No credential returned to user. "Passwordless"
+
+    Injected: No credential is returned to user. (i.e. Passwordless)
 
     ```
     export CRED_LIB_ID_SSH=$(boundary credential-libraries create vault \
@@ -179,6 +181,7 @@ challenges:
     ```
 
     SSH STATIC CREDS (INTERNAL BOUNDARY CREDENTIAL STORE)
+
     This will leverage Boundary's built-in credential store (configured via Terraform above).
     ```
     boundary targets authorize-session -id $SSH_BROKERED_TARGET_ID
@@ -188,6 +191,7 @@ challenges:
     ```
 
     VAULT ACCESS DEMO
+
     Using Boundary exec to create a secure TCP connection to wrap the Vault binary.
     ```
     boundary connect -exec vault -target-id $VAULT_TARGET_ID -- secrets list
