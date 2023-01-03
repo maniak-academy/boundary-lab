@@ -12,7 +12,7 @@ tags:
 owner: hashicorp
 developers:
 - aklaas@hashicorp.com
-maintenance: true
+maintenance: false
 challenges:
 - slug: 01-boundary-worker-setup
   id: vhabntbdidpy
