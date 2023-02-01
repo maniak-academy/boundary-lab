@@ -27,8 +27,8 @@ resource "boundary_scope" "global" {
 }
 
 resource "boundary_scope" "corp" {
-  name                     = "corp_one"
-  description              = "My first scope!"
+  name                     = "enterprise_corp"
+  description              = "Demo first scope!"
   scope_id                 = boundary_scope.global.id
   auto_create_admin_role   = true
   auto_create_default_role = true

@@ -10,8 +10,8 @@ echo "source /usr/share/bash-completion/bash_completion" >> /root/.bashrc
 
 VAULT_VERSION=1.12.0
 TERRAFORM_VERSION=1.3.3
-BOUNDARY_VERSION=0.11.0
-BOUNDARY_WORKER_VERSION=0.11.0
+BOUNDARY_VERSION=0.11.2
+BOUNDARY_WORKER_VERSION=0.11.2
 
 # Install Vault
 curl -fsSL -o /tmp/vault.zip "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip"

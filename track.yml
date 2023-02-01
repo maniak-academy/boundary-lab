@@ -1,19 +1,19 @@
-slug: klaas-boundary-demo
-id: belerrpnu1zl
-version: 0.0.1
-title: Demo Boundary PKI Workers and Target Types (SSH, Postgres, Exec, RDP) (aklaas)
+slug: boundary-quick-local-demo
+version: 0.0.2
+title: Demo Boundary
 teaser: Boundary Demo env (SSH, PSQL, Exec, RDP)
-description: Test Boundary PKI Workers and various Target types
-icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/HashiCorp_Icon_Black.png
+description: Test Boundary PKI Workers and various Target types - based upon Andrew
+  Klass 
+icon: https://registry.terraform.io/images/providers/boundary.svg
 tags:
 - Vault
 - Boundary
 owner: hashicorp
 developers:
 - aklaas@hashicorp.com
+- sebastian.maniak@hashicorp.com
 challenges:
 - slug: 01-boundary-worker-setup
-  id: vhabntbdidpy
   type: challenge
   title: Configuration & Boundary (SSH, Postgres, Exec)
   teaser: Configure Vault to issue credentials for Boundary.
@@ -25,7 +25,6 @@ challenges:
     NOTE: (username: vault, password: vault) for the Vault UI tab (userpass auth method)
 
     First, We need to create a Boundary cluster at https://portal.cloud.hashicorp.com/sign-in.
-    Once logged in there, switch to the Boundary tab (on the left) and create a Boundary cluster. Remember your admin credentials.
 
     After creation, copy the Boundary cluster address URL and switch back to the "Boundary Worker" Instruqt tab.
 
@@ -41,6 +40,7 @@ challenges:
     export ADMIN_USER=
     ```
     You will need to login to your Boundary cluster to get the initial auth method ID. (For now).
+    
     Access the Boundary UI through the HCP portal (click into your Boundary Cluster from the HCP portal).
     It should say "Open Admin UI" as a blue button at the top right of the cluster's page in HCP.
 
@@ -196,39 +196,9 @@ challenges:
     ```
 
     Let's move on to the RDP/Windows demo.
-  tabs:
-  - title: Boundary Worker
-    type: terminal
-    hostname: boundary-worker
-  - title: Boundary Worker Editor
-    type: code
-    hostname: boundary-worker
-    path: /etc/boundary.d/pki-worker.hcl
-  - title: Terraform Editor
-    type: code
-    hostname: boundary-worker
-    path: /root/terraform-boundary/main.tf
-  - title: Vault UI
-    type: service
-    hostname: vault-sql-server
-    port: 8200
-  - title: Vault & SQL Server
-    type: terminal
-    hostname: vault-sql-server
-  difficulty: basic
-  timelimit: 172800
-- slug: 02-windows-demo
-  id: mvaxb0t9vlfo
-  type: challenge
-  title: Using Boundary with Windows
-  teaser: RDP to a windows Server
-  notes:
-  - type: text
-    contents: Boundary provides a secure way to access hosts and critical systems
-      without having to manage credentials or expose your network.
-  assignment: |2-
 
-    Switch to the "remote Desktop tab". This is connected to a front end windows servers and will simulate the client in our demo.
+    # windows Demo
+      Switch to the "remote Desktop tab". This is connected to a front end windows servers and will simulate the client in our demo.
 
     Open a powershell. (click windows button bottom left, then search for powershell).
 
@@ -298,6 +268,24 @@ challenges:
     ```
     We could if optionally used Vault's LDAP/AD secret engine or K/V secret engine for brokering these credentials.
   tabs:
+  - title: Boundary Worker
+    type: terminal
+    hostname: boundary-worker
+  - title: Boundary Worker Editor
+    type: code
+    hostname: boundary-worker
+    path: /etc/boundary.d/pki-worker.hcl
+  - title: Terraform Editor
+    type: code
+    hostname: boundary-worker
+    path: /root/terraform-boundary/main.tf
+  - title: Vault UI
+    type: service
+    hostname: vault-sql-server
+    port: 8200
+  - title: Vault & SQL Server
+    type: terminal
+    hostname: vault-sql-server
   - title: Remote Desktop
     type: service
     hostname: guac
@@ -311,4 +299,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "8369531057147438932"
+checksum: "12296055947934684430"
