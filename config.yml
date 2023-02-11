@@ -34,6 +34,14 @@ containers:
   shell: /bin/bash
   ports:
   - 8080
+aws_accounts:
+- name: consul
+  managed_policies:
+  - arn:aws:iam::aws:policy/AdministratorAccess
+azure_subscriptions:
+- name: consul
+  roles:
+  - Owner
 
 # - name: kubernetes
 #   image: instruqt/instruqt/k3s-v1-25-0

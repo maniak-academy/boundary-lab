@@ -1,9 +1,9 @@
 slug: boundary-quick-local-demo
-version: 0.0.2
+version: 0.0.3
 title: Demo Boundary
 teaser: Boundary Demo env (SSH, PSQL, Exec, RDP)
 description: Test Boundary PKI Workers and various Target types - based upon Andrew
-  Klass 
+  Klass
 icon: https://registry.terraform.io/images/providers/boundary.svg
 tags:
 - Vault
@@ -15,18 +15,15 @@ developers:
 challenges:
 - slug: 01-boundary-worker-setup
   type: challenge
-  title: Configuration & Boundary (SSH, Postgres, Exec)
-  teaser: Configure Vault to issue credentials for Boundary.
+  title: Boundary Demo
+  teaser: Boundary Demo
   notes:
   - type: text
-    contents: Boundary provides a secure way to access hosts and critical systems
-      without having to manage credentials or expose your network.
+    contents: Boundary Lab Environment.
   assignment: |-
     NOTE: (username: vault, password: vault) for the Vault UI tab (userpass auth method)
-
-    First, We need to create a Boundary cluster at https://portal.cloud.hashicorp.com/sign-in.
-
-    After creation, copy the Boundary cluster address URL and switch back to the "Boundary Worker" Instruqt tab.
+    1. Setup an HCP Cluster https://portal.cloud.hashicorp.com/sign-in
+    2. Find the boundary URL and create the following env variables. 
 
     ```
     export BOUNDARY_ADDR=
@@ -39,25 +36,23 @@ challenges:
     ```
     export ADMIN_USER=
     ```
-    You will need to login to your Boundary cluster to get the initial auth method ID. (For now).
     
-    Access the Boundary UI through the HCP portal (click into your Boundary Cluster from the HCP portal).
-    It should say "Open Admin UI" as a blue button at the top right of the cluster's page in HCP.
+    3. You need to log into HCP Boundary cluster find the iniiate auth method ID.
+    note: v 0.12 auth method id will be set to the default so we wont need to do this. 
 
-    On the left hand side in your Boundary cluster Admin UI click the "Auth Methods" tab and copy the method id.
     Set the id.
     ```
     export TF_VAR_auth_method_id=
     ```
-    Login to the cluster. Once logged in, a Boundary token will be returned.
+    4. Login to the cluster. Once logged in, a Boundary token will be returned.
     ```
     boundary authenticate password -auth-method-id=${TF_VAR_auth_method_id} -login-name=$ADMIN_USER
     ```
-    Set the Boundary token.
+    5. Set the Boundary token.
     ```
     export BOUNDARY_TOKEN=
     ```
-    Next we will configure our cluster with demo scopes, catalogs, hosts, targets, etc. using Terraform.
+    6. Create a boundary vault policy and build out the environment
     ```
     cd terraform-boundary/
     vault login -method=userpass username=vault password=vault
@@ -71,13 +66,10 @@ challenges:
     export TF_VAR_vault_token=${BOUNDARY_VAULT_TOKEN}
     terraform init -upgrade
     terraform init
-    ```
-    Run terraform apply.
-    ```
     terraform apply --auto-approve;
     ```
 
-    Set env variables for our project and targets
+    7. Set env variables for our project and targets
     ```
     export PROJECT_ID=$(terraform output -raw PROJECT_ID)
     export POSTGRES_TARGET_ID=$(terraform output -raw POSTGRES_TARGET_ID)
@@ -91,33 +83,30 @@ challenges:
     echo $SSH_INJECTED_TARGET_ID
     echo $VAULT_TARGET_ID
     ```
-    The below command will output the worker_token from the Terraform output as well as the UUID of the cluster.
+    8. The below command will output the worker_token from the Terraform output as well as the UUID of the cluster.
     ```
     echo $BOUNDARY_ADDR | awk -F/ '{print $3}' |  awk -F'.' '{print $1}'
     echo $WORKER_TOKEN
     ```
-    Switch to the "Boundary Worker Editor" tab and add them in the code editor in place of the REPLACEME variables.
-    (Click on the file on the left hand side to open it in the editor)
-
+    9. Switch to the "Boundary Worker Editor" tab and add them in the code editor in place of the REPLACEME variables.
     Save the file and switch back to the "Boundary Worker" tab.
-
-    Now, start the boundary-worker.
+    10. Now, start the boundary-worker.
 
     ```
     systemctl restart boundary-worker
     ```
 
-    You can use the following command to check that your PKI worker was registered. You will likely see 3 KMS workers (Default) and your self managed "PKI" worker.
+    11. HCP boundary you should see the worker being registerd 
     ```
     boundary workers list -token env://BOUNDARY_TOKEN
     ```
 
-    You can also use the following to troubleshoot systemd
+    12. You can also use the following to troubleshoot systemd
     ```
     journalctl -u boundary-worker
     ```
 
-    Now let's setup the Vault integration. This has to be done manually for now until the terraform provider is updated.
+    13. Now let's setup the Vault integration. This has to be done manually for now until the terraform provider is updated.
     https://github.com/hashicorp/terraform-provider-boundary/issues/294
 
 
@@ -267,6 +256,9 @@ challenges:
     p: Passw0rd!
     ```
     We could if optionally used Vault's LDAP/AD secret engine or K/V secret engine for brokering these credentials.
+
+    Azure AD: Setup azure AAD 
+
   tabs:
   - title: Boundary Worker
     type: terminal
@@ -299,4 +291,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "12296055947934684430"
+checksum: "4201899526883834693"
