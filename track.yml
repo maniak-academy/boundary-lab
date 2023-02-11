@@ -1,6 +1,6 @@
 slug: boundary-quick-local-demo
 id: o5law9hvqypq
-version: 0.0.3
+version: 0.0.5
 title: Demo Boundary
 teaser: Boundary Demo env (SSH, PSQL, Exec, RDP)
 description: Test Boundary PKI Workers and various Target types - based upon Andrew
@@ -15,7 +15,7 @@ developers:
 - sebastian.maniak@hashicorp.com
 challenges:
 - slug: 01-boundary-worker-setup
-  id: u6kgdffhqbpv
+  id: sgmnv1azxblx
   type: challenge
   title: Boundary Demo
   teaser: Boundary Demo
@@ -287,11 +287,6 @@ challenges:
   - title: Windows Destination
     type: terminal
     hostname: windows-destination
-  - title: Cloud Consoles
-    type: service
-    hostname: workstation
-    path: /
-    port: 80
   difficulty: basic
   timelimit: 172800
-checksum: "180669719381344874"
+checksum: "12648300828198685717"
