@@ -1,4 +1,5 @@
 slug: boundary-quick-local-demo
+id: o5law9hvqypq
 version: 0.0.3
 title: Demo Boundary
 teaser: Boundary Demo env (SSH, PSQL, Exec, RDP)
@@ -14,6 +15,7 @@ developers:
 - sebastian.maniak@hashicorp.com
 challenges:
 - slug: 01-boundary-worker-setup
+  id: u6kgdffhqbpv
   type: challenge
   title: Boundary Demo
   teaser: Boundary Demo
@@ -23,7 +25,7 @@ challenges:
   assignment: |-
     NOTE: (username: vault, password: vault) for the Vault UI tab (userpass auth method)
     1. Setup an HCP Cluster https://portal.cloud.hashicorp.com/sign-in
-    2. Find the boundary URL and create the following env variables. 
+    2. Find the boundary URL and create the following env variables.
 
     ```
     export BOUNDARY_ADDR=
@@ -36,9 +38,9 @@ challenges:
     ```
     export ADMIN_USER=
     ```
-    
+
     3. You need to log into HCP Boundary cluster find the iniiate auth method ID.
-    note: v 0.12 auth method id will be set to the default so we wont need to do this. 
+    note: v 0.12 auth method id will be set to the default so we wont need to do this.
 
     Set the id.
     ```
@@ -96,7 +98,7 @@ challenges:
     systemctl restart boundary-worker
     ```
 
-    11. HCP boundary you should see the worker being registerd 
+    11. HCP boundary you should see the worker being registerd
     ```
     boundary workers list -token env://BOUNDARY_TOKEN
     ```
@@ -257,8 +259,7 @@ challenges:
     ```
     We could if optionally used Vault's LDAP/AD secret engine or K/V secret engine for brokering these credentials.
 
-    Azure AD: Setup azure AAD 
-
+    Azure AD: Setup azure AAD
   tabs:
   - title: Boundary Worker
     type: terminal
@@ -291,4 +292,4 @@ challenges:
     hostname: windows-destination
   difficulty: basic
   timelimit: 172800
-checksum: "4201899526883834693"
+checksum: "9052992922379275704"
