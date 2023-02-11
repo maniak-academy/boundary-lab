@@ -284,12 +284,14 @@ challenges:
     hostname: guac
     path: /#/client/c/srv01?username=guac_user&password=guac_password
     port: 8080
-  - title: Windows Server PS
-    type: terminal
-    hostname: windows-server
   - title: Windows Destination
     type: terminal
     hostname: windows-destination
+  - title: Cloud Consoles
+    type: service
+    hostname: workstation
+    path: /
+    port: 80
   difficulty: basic
   timelimit: 172800
-checksum: "9052992922379275704"
+checksum: "180669719381344874"

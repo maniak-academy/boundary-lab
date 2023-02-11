@@ -34,6 +34,13 @@ containers:
   shell: /bin/bash
   ports:
   - 8080
+- name: workstation
+  image: gcr.io/instruqt/cloud-client
+  shell: /bin/bash
+  ports:
+  - 80
+  - 443
+  memory: 2048
 aws_accounts:
 - name: consul
   managed_policies:
