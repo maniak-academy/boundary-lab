@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     boundary = {
-      version = "~> 1.1.2"
+      version = "~> 1.1.4"
     }
   }
 }
@@ -124,7 +124,7 @@ resource "boundary_role" "organization_admin" {
 }
 
 resource "boundary_scope" "core_infra" {
-  name                   = "core_infra"
+  name                   = "Core Infrastructure"
   description            = "My first project!"
   scope_id               = boundary_scope.corp.id
   auto_create_admin_role = true
@@ -207,7 +207,7 @@ resource "boundary_target" "backend_servers_ssh_target" {
   default_port             = 22
   session_connection_limit = -1
   session_max_seconds      = 600
-  worker_filter = "\"vault\" in \"/tags/type\""  
+  ingress_worker_filter = "\"vault\" in \"/tags/type\""  
   # Add this manually once the provider is updated
   # https://github.com/hashicorp/terraform-provider-boundary/issues/294
   # injected_credential_source_ids = [
@@ -223,7 +223,7 @@ resource "boundary_target" "backend_servers_ssh_brokered" {
   description  = "Backend SSH target for testing static credential store"
   scope_id     = boundary_scope.core_infra.id
   default_port = 22
-  worker_filter = "\"vault\" in \"/tags/type\""  
+  ingress_worker_filter = "\"vault\" in \"/tags/type\""  
   injected_application_credential_source_ids = [
     # boundary_credential_username_password.example.id,
     boundary_credential_ssh_private_key.example.id
@@ -239,7 +239,7 @@ resource "boundary_target" "backend_servers_psql_target" {
   scope_id                 = boundary_scope.core_infra.id
   default_port             = 5432
   session_connection_limit = -1
-  worker_filter = "\"vault\" in \"/tags/type\""  
+  ingress_worker_filter = "\"vault\" in \"/tags/type\""  
   # brokered_credential_source_ids = [
   #   boundary_credential_library_vault.postgres_cred_library.id
   # ]
@@ -255,7 +255,7 @@ resource "boundary_target" "backend_servers_vault_target" {
   default_port             = 8200
   session_connection_limit = -1
   session_max_seconds      = 600
-  worker_filter = "\"vault\" in \"/tags/type\""  
+  ingress_worker_filter = "\"vault\" in \"/tags/type\""  
   host_source_ids = [
     boundary_host_set_static.backend_servers_vault.id
   ]
@@ -268,7 +268,7 @@ resource "boundary_target" "backend_servers_windows_target" {
   default_port             = 3389
   session_connection_limit = -1
   session_max_seconds      = 600
-  worker_filter = "\"vault\" in \"/tags/type\""  
+  ingress_worker_filter = "\"vault\" in \"/tags/type\""  
   host_source_ids = [
     boundary_host_set_static.backend_servers_windows.id
   ]
@@ -281,7 +281,7 @@ resource "boundary_target" "backend_servers_windows_target" {
 #   name        = "vault_cred_store"
 #   description = "Vault credential store for postgres related access"
 #   address     = "http://vault-sql-server:8200" # change to Vault address
-#   #worker_filter - Needs to be added
+#   #ingress_worker_filter - Needs to be added
 #   token    = var.vault_token # change to valid Vault token
 #   scope_id = boundary_scope.core_infra.id
 # }
